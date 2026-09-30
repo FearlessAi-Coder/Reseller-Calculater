@@ -1,821 +1,698 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080b12">
 
-<title>ResellPro — Morocco Reseller Calculator</title>
+    <title>ResellPro X</title>
 
-<style>
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Inter, Arial, sans-serif;
-    background:
-        radial-gradient(circle at top left, #1d2939 0, transparent 35%),
-        #080b11;
-    color: #f8fafc;
-    min-height: 100vh;
-}
-
-.container {
-    width: 100%;
-    max-width: 1050px;
-    margin: auto;
-    padding: 30px 18px 60px;
-}
-
-/* HEADER */
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 35px;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg,#22c55e,#16a34a);
-    font-size: 22px;
-    box-shadow: 0 8px 30px rgba(34,197,94,.25);
-}
-
-.logo h2 {
-    font-size: 20px;
-}
-
-.logo span {
-    display: block;
-    color: #64748b;
-    font-size: 12px;
-    margin-top: 2px;
-}
-
-.badge {
-    background: rgba(34,197,94,.1);
-    border: 1px solid rgba(34,197,94,.25);
-    color: #4ade80;
-    padding: 8px 12px;
-    border-radius: 30px;
-    font-size: 12px;
-}
-
-/* HERO */
-
-.hero {
-    margin-bottom: 28px;
-}
-
-.hero h1 {
-    font-size: clamp(32px,6vw,52px);
-    line-height: 1;
-    letter-spacing: -2px;
-    margin-bottom: 12px;
-}
-
-.hero h1 span {
-    background: linear-gradient(90deg,#4ade80,#22c55e);
-    -webkit-background-clip: text;
-    color: transparent;
-}
-
-.hero p {
-    color: #94a3b8;
-    max-width: 600px;
-    line-height: 1.6;
-}
-
-/* MAIN GRID */
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1.1fr;
-    gap: 20px;
-}
-
-/* CARD */
-
-.card {
-    background: rgba(15,23,42,.78);
-    border: 1px solid #1e293b;
-    border-radius: 22px;
-    padding: 24px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.25);
-    backdrop-filter: blur(10px);
-}
-
-.card-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 22px;
-}
-
-.card-title h3 {
-    font-size: 17px;
-}
-
-.card-title span {
-    color: #64748b;
-    font-size: 12px;
-}
-
-/* INPUTS */
-
-.input-group {
-    margin-bottom: 17px;
-}
-
-label {
-    display: block;
-    color: #cbd5e1;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.input-wrap {
-    position: relative;
-}
-
-input {
-    width: 100%;
-    padding: 15px 48px 15px 15px;
-    background: #0b1120;
-    border: 1px solid #263244;
-    color: white;
-    border-radius: 13px;
-    outline: none;
-    font-size: 16px;
-    transition: .2s;
-}
-
-input:focus {
-    border-color: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34,197,94,.1);
-}
-
-.currency {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #64748b;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-/* BUTTON */
-
-.calculate {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(135deg,#22c55e,#16a34a);
-    color: white;
-    font-size: 16px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: .2s;
-    box-shadow: 0 10px 30px rgba(34,197,94,.2);
-}
-
-.calculate:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(34,197,94,.3);
-}
-
-/* QUICK BUTTONS */
-
-.quick {
-    display: flex;
-    gap: 8px;
-    margin-top: 13px;
-}
-
-.quick button {
-    flex: 1;
-    padding: 9px;
-    background: #111827;
-    border: 1px solid #263244;
-    color: #94a3b8;
-    border-radius: 9px;
-    cursor: pointer;
-    font-size: 11px;
-}
-
-.quick button:hover {
-    color: white;
-    border-color: #22c55e;
-}
-
-/* RESULTS */
-
-.big-result {
-    background: linear-gradient(135deg,rgba(34,197,94,.15),rgba(15,23,42,.5));
-    border: 1px solid rgba(34,197,94,.25);
-    border-radius: 18px;
-    padding: 23px;
-    margin-bottom: 14px;
-}
-
-.big-result small {
-    color: #94a3b8;
-}
-
-.big-result h2 {
-    font-size: 38px;
-    margin-top: 5px;
-    color: #4ade80;
-}
-
-.results {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.result {
-    padding: 18px;
-    border-radius: 15px;
-    background: #0b1120;
-    border: 1px solid #1e293b;
-}
-
-.result small {
-    color: #64748b;
-}
-
-.result strong {
-    display: block;
-    margin-top: 7px;
-    font-size: 20px;
-}
-
-.green {
-    color: #4ade80;
-}
-
-.red {
-    color: #f87171;
-}
-
-.warning {
-    margin-top: 15px;
-    padding: 13px;
-    border-radius: 12px;
-    background: rgba(248,113,113,.1);
-    border: 1px solid rgba(248,113,113,.2);
-    color: #fca5a5;
-    font-size: 13px;
-    display: none;
-}
-
-.success {
-    margin-top: 15px;
-    padding: 13px;
-    border-radius: 12px;
-    background: rgba(34,197,94,.08);
-    border: 1px solid rgba(34,197,94,.18);
-    color: #86efac;
-    font-size: 13px;
-}
-
-/* COPY */
-
-.copy {
-    width: 100%;
-    margin-top: 14px;
-    padding: 12px;
-    background: transparent;
-    border: 1px solid #263244;
-    color: #cbd5e1;
-    border-radius: 11px;
-    cursor: pointer;
-}
-
-.copy:hover {
-    border-color: #22c55e;
-}
-
-/* FOOTER */
-
-footer {
-    text-align: center;
-    margin-top: 35px;
-    color: #475569;
-    font-size: 12px;
-}
-
-/* MOBILE */
-
-@media(max-width:760px) {
-
-    .container {
-        padding-top: 20px;
-    }
-
-    header {
-        margin-bottom: 25px;
-    }
-
-    .badge {
-        display: none;
-    }
-
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    .hero h1 {
-        font-size: 39px;
-    }
-
-    .card {
-        padding: 20px;
-    }
-}
-
-</style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-<header>
+    <!-- SIDEBAR -->
 
-    <div class="logo">
+    <aside class="sidebar">
 
-        <div class="logo-icon">
-            💰
+        <div class="brand">
+            <div class="brand-icon">◆</div>
+
+            <div>
+                <strong>ResellPro</strong>
+                <small>X</small>
+            </div>
         </div>
 
-        <div>
-            <h2>ResellPro</h2>
-            <span>Made for Moroccan resellers</span>
-        </div>
+        <nav>
 
-    </div>
+            <button class="nav-item active" data-page="dashboard">
+                <span>⌂</span>
+                Dashboard
+            </button>
 
-    <div class="badge">
-        🇲🇦 MAD / DH
-    </div>
+            <button class="nav-item" data-page="calculator">
+                <span>⌘</span>
+                Calculator
+            </button>
 
-</header>
+            <button class="nav-item" data-page="products">
+                <span>▦</span>
+                Products
+            </button>
 
+            <button class="nav-item" data-page="sales">
+                <span>↗</span>
+                Sales
+            </button>
 
-<section class="hero">
+            <button class="nav-item" data-page="analytics">
+                <span>◉</span>
+                Analytics
+            </button>
 
-    <h1>
-        Know your <span>profit.</span>
-    </h1>
+        </nav>
 
-    <p>
-        Calculate exactly how much you spend, earn and keep
-        from every product you sell.
-    </p>
+        <div class="sidebar-bottom">
 
-</section>
+            <button class="nav-item" data-page="settings">
+                <span>⚙</span>
+                Settings
+            </button>
 
-
-<div class="grid">
-
-
-<!-- CALCULATOR -->
-
-<div class="card">
-
-    <div class="card-title">
-        <h3>Product costs</h3>
-        <span>Enter your numbers</span>
-    </div>
-
-
-    <div class="input-group">
-
-        <label>Product cost</label>
-
-        <div class="input-wrap">
-
-            <input
-                id="productCost"
-                type="number"
-                placeholder="20"
-                oninput="calculate()"
-            >
-
-            <span class="currency">DH</span>
+            <div class="version">
+                ResellPro X<br>
+                <span>v1.0</span>
+            </div>
 
         </div>
 
-    </div>
+    </aside>
 
 
-    <div class="input-group">
+    <!-- MAIN -->
 
-        <label>Shipping</label>
+    <main class="main">
 
-        <div class="input-wrap">
+        <header class="topbar">
 
-            <input
-                id="shipping"
-                type="number"
-                placeholder="10"
-                oninput="calculate()"
-            >
+            <div>
+                <p class="eyebrow">COMMAND CENTER</p>
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
 
-            <span class="currency">DH</span>
+            <div class="top-actions">
+
+                <select id="currencySelect">
+                    <option value="MAD">MAD د.م.</option>
+                    <option value="USD">USD $</option>
+                    <option value="EUR">EUR €</option>
+                    <option value="GBP">GBP £</option>
+                    <option value="CAD">CAD $</option>
+                    <option value="AUD">AUD $</option>
+                    <option value="CHF">CHF Fr</option>
+                    <option value="JPY">JPY ¥</option>
+                </select>
+
+                <button class="mobile-menu" id="mobileMenu">
+                    ☰
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD -->
+
+        <section class="page active" id="dashboard">
+
+            <div class="hero-card">
+
+                <div>
+
+                    <p class="eyebrow">YOUR BUSINESS</p>
+
+                    <h2>
+                        Turn products into
+                        <span>profit.</span>
+                    </h2>
+
+                    <p class="hero-text">
+                        Track your inventory, sales and profit
+                        from one powerful workspace.
+                    </p>
+
+                    <button class="primary-btn" data-page="calculator">
+                        Calculate a deal →
+                    </button>
+
+                </div>
+
+                <div class="hero-orb">
+                    <div>↗</div>
+                </div>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <span class="stat-icon">💰</span>
+                    <p>Total Revenue</p>
+                    <h3 id="dashRevenue">0</h3>
+                    <small>All recorded sales</small>
+                </div>
+
+                <div class="stat-card profit-card">
+                    <span class="stat-icon">📈</span>
+                    <p>Total Profit</p>
+                    <h3 id="dashProfit">0</h3>
+                    <small>Money you've made</small>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-icon">📦</span>
+                    <p>Products</p>
+                    <h3 id="dashProducts">0</h3>
+                    <small>In your inventory</small>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-icon">🛒</span>
+                    <p>Items Sold</p>
+                    <h3 id="dashSold">0</h3>
+                    <small>Total units</small>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <p class="eyebrow">OVERVIEW</p>
+                            <h3>Business snapshot</h3>
+                        </div>
+
+                        <span class="live-dot">● LIVE</span>
+                    </div>
+
+                    <div class="snapshot">
+
+                        <div>
+                            <span>Average profit / sale</span>
+                            <strong id="dashAverage">0</strong>
+                        </div>
+
+                        <div>
+                            <span>Profit margin</span>
+                            <strong id="dashMargin">0%</strong>
+                        </div>
+
+                        <div>
+                            <span>Inventory value</span>
+                            <strong id="dashInventory">0</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <p class="eyebrow">QUICK START</p>
+                            <h3>What do you want to do?</h3>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+
+                        <button data-page="products">
+                            <b>＋</b>
+                            Add product
+                        </button>
+
+                        <button data-page="sales">
+                            <b>↗</b>
+                            Record sale
+                        </button>
+
+                        <button data-page="calculator">
+                            <b>⌘</b>
+                            Calculate profit
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">INVENTORY</p>
+                        <h3>Recent products</h3>
+                    </div>
+
+                    <button class="text-btn" data-page="products">
+                        View all →
+                    </button>
+                </div>
+
+                <div id="recentProducts" class="product-list">
+                    <div class="empty">
+                        <div>📦</div>
+                        <strong>No products yet</strong>
+                        <p>Add your first product to start tracking your business.</p>
+                        <button class="primary-btn small" data-page="products">
+                            Add first product
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CALCULATOR -->
+
+        <section class="page" id="calculator">
+
+            <div class="section-intro">
+
+                <p class="eyebrow">SMART CALCULATOR</p>
+
+                <h2>Know your numbers.</h2>
+
+                <p>
+                    See exactly what a deal could make before you spend a single dirham.
+                </p>
+
+            </div>
+
+
+            <div class="calculator-grid">
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>Deal details</h3>
+                    </div>
+
+                    <div class="form-grid">
+
+                        <label>
+                            Product cost
+                            <div class="input-wrap">
+                                <input id="calcCost" type="number" placeholder="20">
+                                <span class="unit currency-label">MAD</span>
+                            </div>
+                        </label>
+
+                        <label>
+                            Shipping
+                            <div class="input-wrap">
+                                <input id="calcShipping" type="number" placeholder="10">
+                                <span class="unit currency-label">MAD</span>
+                            </div>
+                        </label>
+
+                        <label>
+                            Packaging
+                            <div class="input-wrap">
+                                <input id="calcPackaging" type="number" placeholder="3">
+                                <span class="unit currency-label">MAD</span>
+                            </div>
+                        </label>
+
+                        <label>
+                            Other costs
+                            <div class="input-wrap">
+                                <input id="calcOther" type="number" placeholder="0">
+                                <span class="unit currency-label">MAD</span>
+                            </div>
+                        </label>
+
+                        <label>
+                            Selling price
+                            <div class="input-wrap">
+                                <input id="calcPrice" type="number" placeholder="59">
+                                <span class="unit currency-label">MAD</span>
+                            </div>
+                        </label>
+
+                        <label>
+                            Quantity
+                            <div class="input-wrap">
+                                <input id="calcQuantity" type="number" placeholder="100">
+                                <span class="unit">×</span>
+                            </div>
+                        </label>
+
+                    </div>
+
+                    <button class="primary-btn full" id="calculateBtn">
+                        Calculate →
+                    </button>
+
+                </div>
+
+
+                <div class="panel result-panel">
+
+                    <p class="eyebrow">POTENTIAL PROFIT</p>
+
+                    <div class="mega-number" id="calcTotalProfit">
+                        0
+                    </div>
+
+                    <p class="currency-label">TOTAL PROFIT</p>
+
+                    <div class="result-grid">
+
+                        <div>
+                            <span>Profit / item</span>
+                            <strong id="calcProfit">0</strong>
+                        </div>
+
+                        <div>
+                            <span>Margin</span>
+                            <strong id="calcMargin">0%</strong>
+                        </div>
+
+                        <div>
+                            <span>Revenue</span>
+                            <strong id="calcRevenue">0</strong>
+                        </div>
+
+                        <div>
+                            <span>Break-even</span>
+                            <strong id="calcBreakEven">0</strong>
+                        </div>
+
+                    </div>
+
+                    <div id="calcMessage" class="result-message">
+                        Enter your numbers to see your potential.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PRODUCTS -->
+
+        <section class="page" id="products">
+
+            <div class="section-heading">
+
+                <div>
+                    <p class="eyebrow">INVENTORY</p>
+                    <h2>Your products</h2>
+                    <p>Know what you have and what it could make.</p>
+                </div>
+
+                <button class="primary-btn" id="addProductBtn">
+                    ＋ Add product
+                </button>
+
+            </div>
+
+            <div id="productsList" class="products-grid">
+
+                <div class="empty">
+                    <div>📦</div>
+                    <strong>Your inventory is empty</strong>
+                    <p>Add products to start building your business.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SALES -->
+
+        <section class="page" id="sales">
+
+            <div class="section-heading">
+
+                <div>
+                    <p class="eyebrow">SALES</p>
+                    <h2>Record your sales</h2>
+                    <p>Every sale gets added to your business numbers.</p>
+                </div>
+
+                <button class="primary-btn" id="recordSaleBtn">
+                    ＋ Record sale
+                </button>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <h3>Sales history</h3>
+                </div>
+
+                <div id="salesList">
+
+                    <div class="empty">
+                        <div>🛒</div>
+                        <strong>No sales yet</strong>
+                        <p>Your recorded sales will appear here.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ANALYTICS -->
+
+        <section class="page" id="analytics">
+
+            <div class="section-intro">
+
+                <p class="eyebrow">ANALYTICS</p>
+
+                <h2>Your business at a glance.</h2>
+
+                <p>
+                    Simple numbers that help you understand your operation.
+                </p>
+
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <p>Revenue</p>
+                    <h3 id="analyticsRevenue">0</h3>
+                </div>
+
+                <div class="stat-card profit-card">
+                    <p>Profit</p>
+                    <h3 id="analyticsProfit">0</h3>
+                </div>
+
+                <div class="stat-card">
+                    <p>Items sold</p>
+                    <h3 id="analyticsSold">0</h3>
+                </div>
+
+                <div class="stat-card">
+                    <p>Margin</p>
+                    <h3 id="analyticsMargin">0%</h3>
+                </div>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">PERFORMANCE</p>
+                        <h3>Profit overview</h3>
+                    </div>
+                </div>
+
+                <div class="bar-chart" id="barChart">
+
+                    <div class="chart-empty">
+                        Record sales to unlock your business chart.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SETTINGS -->
+
+        <section class="page" id="settings">
+
+            <div class="section-intro">
+
+                <p class="eyebrow">SETTINGS</p>
+
+                <h2>Make ResellPro yours.</h2>
+
+                <p>Control your currency and business data.</p>
+
+            </div>
+
+            <div class="settings-grid">
+
+                <div class="panel">
+
+                    <h3>Currency</h3>
+
+                    <p class="muted">
+                        Choose the currency you use for your business.
+                    </p>
+
+                    <select id="settingsCurrency">
+                        <option value="MAD">🇲🇦 Moroccan Dirham — MAD</option>
+                        <option value="USD">🇺🇸 US Dollar — USD</option>
+                        <option value="EUR">🇪🇺 Euro — EUR</option>
+                        <option value="GBP">🇬🇧 Pound — GBP</option>
+                        <option value="CAD">🇨🇦 Canadian Dollar — CAD</option>
+                        <option value="AUD">🇦🇺 Australian Dollar — AUD</option>
+                        <option value="CHF">🇨🇭 Swiss Franc — CHF</option>
+                        <option value="JPY">🇯🇵 Japanese Yen — JPY</option>
+                    </select>
+
+                </div>
+
+                <div class="panel">
+
+                    <h3>Demo mode</h3>
+
+                    <p class="muted">
+                        Load sample products and sales so you can explore the dashboard.
+                    </p>
+
+                    <button class="secondary-btn" id="demoBtn">
+                        Load demo business
+                    </button>
+
+                </div>
+
+                <div class="panel danger-panel">
+
+                    <h3>Reset business</h3>
+
+                    <p class="muted">
+                        Permanently clear your products and sales from this browser.
+                    </p>
+
+                    <button class="danger-btn" id="resetBtn">
+                        Reset everything
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<!-- PRODUCT MODAL -->
+
+<div class="modal" id="productModal">
+
+    <div class="modal-box">
+
+        <button class="close" data-close="productModal">×</button>
+
+        <p class="eyebrow">NEW PRODUCT</p>
+
+        <h2>Add a product</h2>
+
+        <div class="modal-form">
+
+            <label>
+                Product name
+                <input id="productName" placeholder="Example: Wireless Earbuds">
+            </label>
+
+            <label>
+                Cost per item
+                <input id="productCost" type="number" placeholder="20">
+            </label>
+
+            <label>
+                Selling price
+                <input id="productPrice" type="number" placeholder="59">
+            </label>
+
+            <label>
+                Stock
+                <input id="productStock" type="number" placeholder="50">
+            </label>
 
         </div>
 
-    </div>
-
-
-    <div class="input-group">
-
-        <label>Packaging</label>
-
-        <div class="input-wrap">
-
-            <input
-                id="packaging"
-                type="number"
-                placeholder="3"
-                oninput="calculate()"
-            >
-
-            <span class="currency">DH</span>
-
-        </div>
-
-    </div>
-
-
-    <div class="input-group">
-
-        <label>Selling price</label>
-
-        <div class="input-wrap">
-
-            <input
-                id="sellingPrice"
-                type="number"
-                placeholder="59"
-                oninput="calculate()"
-            >
-
-            <span class="currency">DH</span>
-
-        </div>
-
-    </div>
-
-
-    <div class="input-group">
-
-        <label>Number of items</label>
-
-        <div class="input-wrap">
-
-            <input
-                id="sales"
-                type="number"
-                placeholder="100"
-                oninput="calculate()"
-            >
-
-            <span class="currency">×</span>
-
-        </div>
-
-    </div>
-
-
-    <button class="calculate" onclick="calculate()">
-        Calculate my profit →
-    </button>
-
-
-    <div class="quick">
-
-        <button onclick="example(20,10,3,59,100)">
-            Example
+        <button class="primary-btn full" id="saveProduct">
+            Add product
         </button>
 
-        <button onclick="example(50,15,5,99,100)">
-            Clothing
+    </div>
+
+</div>
+
+
+<!-- SALE MODAL -->
+
+<div class="modal" id="saleModal">
+
+    <div class="modal-box">
+
+        <button class="close" data-close="saleModal">×</button>
+
+        <p class="eyebrow">NEW SALE</p>
+
+        <h2>Record a sale</h2>
+
+        <div class="modal-form">
+
+            <label>
+                Product
+
+                <select id="saleProduct">
+                    <option value="">Choose a product</option>
+                </select>
+
+            </label>
+
+            <label>
+                Quantity sold
+                <input id="saleQuantity" type="number" value="1" min="1">
+            </label>
+
+        </div>
+
+        <button class="primary-btn full" id="saveSale">
+            Record sale
         </button>
 
-        <button onclick="example(120,20,8,199,50)">
-            Premium
-        </button>
-
     </div>
 
 </div>
 
 
+<div id="toast"></div>
 
-<!-- RESULTS -->
 
-<div class="card">
-
-    <div class="card-title">
-        <h3>Your results</h3>
-        <span>Live calculation</span>
-    </div>
-
-
-    <div class="big-result">
-
-        <small>Total profit</small>
-
-        <h2 id="totalProfit">
-            0 DH
-        </h2>
-
-    </div>
-
-
-    <div class="results">
-
-        <div class="result">
-
-            <small>Cost / item</small>
-
-            <strong id="totalCost">
-                0 DH
-            </strong>
-
-        </div>
-
-
-        <div class="result">
-
-            <small>Profit / item</small>
-
-            <strong id="profit" class="green">
-                0 DH
-            </strong>
-
-        </div>
-
-
-        <div class="result">
-
-            <small>Profit margin</small>
-
-            <strong id="margin">
-                0%
-            </strong>
-
-        </div>
-
-
-        <div class="result">
-
-            <small>Total revenue</small>
-
-            <strong id="revenue">
-                0 DH
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <div id="message" class="success">
-        Enter your numbers to calculate your potential profit.
-    </div>
-
-
-    <div id="warning" class="warning">
-        ⚠️ You're selling below your total cost.
-    </div>
-
-
-    <button class="copy" onclick="copyResults()">
-        📋 Copy results
-    </button>
-
-</div>
-
-</div>
-
-
-<footer>
-    ResellPro 🇲🇦 · Built for smarter reselling
-</footer>
-
-</div>
-
-
-<script>
-
-function calculate() {
-
-    const productCost =
-        Number(document.getElementById("productCost").value) || 0;
-
-    const shipping =
-        Number(document.getElementById("shipping").value) || 0;
-
-    const packaging =
-        Number(document.getElementById("packaging").value) || 0;
-
-    const sellingPrice =
-        Number(document.getElementById("sellingPrice").value) || 0;
-
-    const sales =
-        Number(document.getElementById("sales").value) || 0;
-
-
-    const totalCost =
-        productCost + shipping + packaging;
-
-    const profit =
-        sellingPrice - totalCost;
-
-    const revenue =
-        sellingPrice * sales;
-
-    const totalProfit =
-        profit * sales;
-
-    const margin =
-        sellingPrice > 0
-        ? (profit / sellingPrice) * 100
-        : 0;
-
-
-    document.getElementById("totalCost").textContent =
-        totalCost.toFixed(2) + " DH";
-
-    document.getElementById("profit").textContent =
-        profit.toFixed(2) + " DH";
-
-    document.getElementById("margin").textContent =
-        margin.toFixed(1) + "%";
-
-    document.getElementById("revenue").textContent =
-        revenue.toFixed(2) + " DH";
-
-    document.getElementById("totalProfit").textContent =
-        totalProfit.toFixed(2) + " DH";
-
-
-    const profitElement =
-        document.getElementById("profit");
-
-    const warning =
-        document.getElementById("warning");
-
-    const message =
-        document.getElementById("message");
-
-
-    if (profit < 0) {
-
-        profitElement.className = "red";
-
-        warning.style.display = "block";
-
-        message.style.display = "none";
-
-    } else {
-
-        profitElement.className = "green";
-
-        warning.style.display = "none";
-
-        message.style.display = "block";
-
-        message.textContent =
-            "🔥 You're making " +
-            profit.toFixed(2) +
-            " DH per item.";
-
-    }
-
-
-    localStorage.setItem(
-        "resellProData",
-        JSON.stringify({
-            productCost,
-            shipping,
-            packaging,
-            sellingPrice,
-            sales
-        })
-    );
-
-}
-
-
-function example(
-    product,
-    shipping,
-    packaging,
-    price,
-    sales
-) {
-
-    document.getElementById("productCost").value = product;
-
-    document.getElementById("shipping").value = shipping;
-
-    document.getElementById("packaging").value = packaging;
-
-    document.getElementById("sellingPrice").value = price;
-
-    document.getElementById("sales").value = sales;
-
-    calculate();
-
-}
-
-
-function copyResults() {
-
-    const profit =
-        document.getElementById("profit").textContent;
-
-    const totalProfit =
-        document.getElementById("totalProfit").textContent;
-
-    const margin =
-        document.getElementById("margin").textContent;
-
-    const revenue =
-        document.getElementById("revenue").textContent;
-
-
-    const text =
-`ResellPro 🇲🇦
-
-Revenue: ${revenue}
-Profit per item: ${profit}
-Total profit: ${totalProfit}
-Profit margin: ${margin}`;
-
-    navigator.clipboard.writeText(text);
-
-    alert("Results copied! 📋");
-
-}
-
-
-/* LOAD SAVED DATA */
-
-window.onload = function() {
-
-    const saved =
-        localStorage.getItem("resellProData");
-
-    if (!saved) return;
-
-    const data =
-        JSON.parse(saved);
-
-    document.getElementById("productCost").value =
-        data.productCost;
-
-    document.getElementById("shipping").value =
-        data.shipping;
-
-    document.getElementById("packaging").value =
-        data.packaging;
-
-    document.getElementById("sellingPrice").value =
-        data.sellingPrice;
-
-    document.getElementById("sales").value =
-        data.sales;
-
-    calculate();
-
-};
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
