@@ -1,234 +1,821 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Reseller Calculator</title>
+<title>ResellPro — Morocco Reseller Calculator</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<style>
 
-    body {
-      margin: 0;
-      background: #f4f6f8;
-      color: #111827;
-    }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Inter, Arial, sans-serif;
+    background:
+        radial-gradient(circle at top left, #1d2939 0, transparent 35%),
+        #080b11;
+    color: #f8fafc;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 1050px;
+    margin: auto;
+    padding: 30px 18px 60px;
+}
+
+/* HEADER */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,#22c55e,#16a34a);
+    font-size: 22px;
+    box-shadow: 0 8px 30px rgba(34,197,94,.25);
+}
+
+.logo h2 {
+    font-size: 20px;
+}
+
+.logo span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.badge {
+    background: rgba(34,197,94,.1);
+    border: 1px solid rgba(34,197,94,.25);
+    color: #4ade80;
+    padding: 8px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+}
+
+/* HERO */
+
+.hero {
+    margin-bottom: 28px;
+}
+
+.hero h1 {
+    font-size: clamp(32px,6vw,52px);
+    line-height: 1;
+    letter-spacing: -2px;
+    margin-bottom: 12px;
+}
+
+.hero h1 span {
+    background: linear-gradient(90deg,#4ade80,#22c55e);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    color: #94a3b8;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+/* MAIN GRID */
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 20px;
+}
+
+/* CARD */
+
+.card {
+    background: rgba(15,23,42,.78);
+    border: 1px solid #1e293b;
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    backdrop-filter: blur(10px);
+}
+
+.card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.card-title h3 {
+    font-size: 17px;
+}
+
+.card-title span {
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* INPUTS */
+
+.input-group {
+    margin-bottom: 17px;
+}
+
+label {
+    display: block;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+input {
+    width: 100%;
+    padding: 15px 48px 15px 15px;
+    background: #0b1120;
+    border: 1px solid #263244;
+    color: white;
+    border-radius: 13px;
+    outline: none;
+    font-size: 16px;
+    transition: .2s;
+}
+
+input:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.1);
+}
+
+.currency {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* BUTTON */
+
+.calculate {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg,#22c55e,#16a34a);
+    color: white;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s;
+    box-shadow: 0 10px 30px rgba(34,197,94,.2);
+}
+
+.calculate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(34,197,94,.3);
+}
+
+/* QUICK BUTTONS */
+
+.quick {
+    display: flex;
+    gap: 8px;
+    margin-top: 13px;
+}
+
+.quick button {
+    flex: 1;
+    padding: 9px;
+    background: #111827;
+    border: 1px solid #263244;
+    color: #94a3b8;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.quick button:hover {
+    color: white;
+    border-color: #22c55e;
+}
+
+/* RESULTS */
+
+.big-result {
+    background: linear-gradient(135deg,rgba(34,197,94,.15),rgba(15,23,42,.5));
+    border: 1px solid rgba(34,197,94,.25);
+    border-radius: 18px;
+    padding: 23px;
+    margin-bottom: 14px;
+}
+
+.big-result small {
+    color: #94a3b8;
+}
+
+.big-result h2 {
+    font-size: 38px;
+    margin-top: 5px;
+    color: #4ade80;
+}
+
+.results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.result {
+    padding: 18px;
+    border-radius: 15px;
+    background: #0b1120;
+    border: 1px solid #1e293b;
+}
+
+.result small {
+    color: #64748b;
+}
+
+.result strong {
+    display: block;
+    margin-top: 7px;
+    font-size: 20px;
+}
+
+.green {
+    color: #4ade80;
+}
+
+.red {
+    color: #f87171;
+}
+
+.warning {
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 12px;
+    background: rgba(248,113,113,.1);
+    border: 1px solid rgba(248,113,113,.2);
+    color: #fca5a5;
+    font-size: 13px;
+    display: none;
+}
+
+.success {
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 12px;
+    background: rgba(34,197,94,.08);
+    border: 1px solid rgba(34,197,94,.18);
+    color: #86efac;
+    font-size: 13px;
+}
+
+/* COPY */
+
+.copy {
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid #263244;
+    color: #cbd5e1;
+    border-radius: 11px;
+    cursor: pointer;
+}
+
+.copy:hover {
+    border-color: #22c55e;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    margin-top: 35px;
+    color: #475569;
+    font-size: 12px;
+}
+
+/* MOBILE */
+
+@media(max-width:760px) {
 
     .container {
-      max-width: 700px;
-      margin: auto;
-      padding: 30px 20px;
+        padding-top: 20px;
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 8px;
+    header {
+        margin-bottom: 25px;
     }
 
-    .subtitle {
-      text-align: center;
-      color: #6b7280;
-      margin-bottom: 25px;
+    .badge {
+        display: none;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 39px;
     }
 
     .card {
-      background: white;
-      padding: 25px;
-      border-radius: 18px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
+        padding: 20px;
     }
+}
 
-    label {
-      display: block;
-      font-weight: bold;
-      margin-top: 15px;
-      margin-bottom: 7px;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      margin-top: 22px;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
-      background: #111827;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .results {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .result {
-      background: #f3f4f6;
-      padding: 18px;
-      border-radius: 12px;
-    }
-
-    .result span {
-      display: block;
-      color: #6b7280;
-      font-size: 14px;
-      margin-bottom: 5px;
-    }
-
-    .result strong {
-      font-size: 22px;
-    }
-
-    .profit {
-      background: #dcfce7;
-    }
-
-    .profit strong {
-      color: #166534;
-    }
-
-    .error {
-      color: #dc2626;
-      text-align: center;
-      margin-top: 15px;
-    }
-
-    @media (max-width: 500px) {
-      .results {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+</style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <h1>🇲🇦 Reseller Calculator</h1>
+<header>
 
-    <p class="subtitle">
-      Calculate your costs, profit and profit margin
+    <div class="logo">
+
+        <div class="logo-icon">
+            💰
+        </div>
+
+        <div>
+            <h2>ResellPro</h2>
+            <span>Made for Moroccan resellers</span>
+        </div>
+
+    </div>
+
+    <div class="badge">
+        🇲🇦 MAD / DH
+    </div>
+
+</header>
+
+
+<section class="hero">
+
+    <h1>
+        Know your <span>profit.</span>
+    </h1>
+
+    <p>
+        Calculate exactly how much you spend, earn and keep
+        from every product you sell.
     </p>
 
-    <div class="card">
+</section>
 
-      <label>Product Cost (DH)</label>
-      <input id="productCost" type="number" placeholder="20">
 
-      <label>Shipping Cost (DH)</label>
-      <input id="shipping" type="number" placeholder="10">
+<div class="grid">
 
-      <label>Packaging Cost (DH)</label>
-      <input id="packaging" type="number" placeholder="3">
 
-      <label>Selling Price (DH)</label>
-      <input id="sellingPrice" type="number" placeholder="59">
+<!-- CALCULATOR -->
 
-      <label>Number of Sales</label>
-      <input id="sales" type="number" placeholder="100">
+<div class="card">
 
-      <button onclick="calculate()">
-        Calculate Profit
-      </button>
+    <div class="card-title">
+        <h3>Product costs</h3>
+        <span>Enter your numbers</span>
+    </div>
 
-      <div id="error" class="error"></div>
+
+    <div class="input-group">
+
+        <label>Product cost</label>
+
+        <div class="input-wrap">
+
+            <input
+                id="productCost"
+                type="number"
+                placeholder="20"
+                oninput="calculate()"
+            >
+
+            <span class="currency">DH</span>
+
+        </div>
 
     </div>
 
-    <div class="card">
 
-      <div class="results">
+    <div class="input-group">
 
-        <div class="result">
-          <span>Total Cost Per Item</span>
-          <strong id="totalCost">0 DH</strong>
+        <label>Shipping</label>
+
+        <div class="input-wrap">
+
+            <input
+                id="shipping"
+                type="number"
+                placeholder="10"
+                oninput="calculate()"
+            >
+
+            <span class="currency">DH</span>
+
         </div>
-
-        <div class="result profit">
-          <span>Profit Per Item</span>
-          <strong id="profit">0 DH</strong>
-        </div>
-
-        <div class="result">
-          <span>Profit Margin</span>
-          <strong id="margin">0%</strong>
-        </div>
-
-        <div class="result">
-          <span>Total Revenue</span>
-          <strong id="revenue">0 DH</strong>
-        </div>
-
-        <div class="result profit">
-          <span>Total Profit</span>
-          <strong id="totalProfit">0 DH</strong>
-        </div>
-
-      </div>
 
     </div>
 
-  </div>
 
-  <script>
-    function calculate() {
+    <div class="input-group">
 
-      const productCost = Number(document.getElementById("productCost").value) || 0;
-      const shipping = Number(document.getElementById("shipping").value) || 0;
-      const packaging = Number(document.getElementById("packaging").value) || 0;
-      const sellingPrice = Number(document.getElementById("sellingPrice").value) || 0;
-      const sales = Number(document.getElementById("sales").value) || 0;
+        <label>Packaging</label>
 
-      const totalCost = productCost + shipping + packaging;
-      const profit = sellingPrice - totalCost;
+        <div class="input-wrap">
 
-      let margin = 0;
+            <input
+                id="packaging"
+                type="number"
+                placeholder="3"
+                oninput="calculate()"
+            >
 
-      if (sellingPrice > 0) {
-        margin = (profit / sellingPrice) * 100;
-      }
+            <span class="currency">DH</span>
 
-      const revenue = sellingPrice * sales;
-      const totalProfit = profit * sales;
+        </div>
 
-      document.getElementById("totalCost").textContent =
+    </div>
+
+
+    <div class="input-group">
+
+        <label>Selling price</label>
+
+        <div class="input-wrap">
+
+            <input
+                id="sellingPrice"
+                type="number"
+                placeholder="59"
+                oninput="calculate()"
+            >
+
+            <span class="currency">DH</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="input-group">
+
+        <label>Number of items</label>
+
+        <div class="input-wrap">
+
+            <input
+                id="sales"
+                type="number"
+                placeholder="100"
+                oninput="calculate()"
+            >
+
+            <span class="currency">×</span>
+
+        </div>
+
+    </div>
+
+
+    <button class="calculate" onclick="calculate()">
+        Calculate my profit →
+    </button>
+
+
+    <div class="quick">
+
+        <button onclick="example(20,10,3,59,100)">
+            Example
+        </button>
+
+        <button onclick="example(50,15,5,99,100)">
+            Clothing
+        </button>
+
+        <button onclick="example(120,20,8,199,50)">
+            Premium
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- RESULTS -->
+
+<div class="card">
+
+    <div class="card-title">
+        <h3>Your results</h3>
+        <span>Live calculation</span>
+    </div>
+
+
+    <div class="big-result">
+
+        <small>Total profit</small>
+
+        <h2 id="totalProfit">
+            0 DH
+        </h2>
+
+    </div>
+
+
+    <div class="results">
+
+        <div class="result">
+
+            <small>Cost / item</small>
+
+            <strong id="totalCost">
+                0 DH
+            </strong>
+
+        </div>
+
+
+        <div class="result">
+
+            <small>Profit / item</small>
+
+            <strong id="profit" class="green">
+                0 DH
+            </strong>
+
+        </div>
+
+
+        <div class="result">
+
+            <small>Profit margin</small>
+
+            <strong id="margin">
+                0%
+            </strong>
+
+        </div>
+
+
+        <div class="result">
+
+            <small>Total revenue</small>
+
+            <strong id="revenue">
+                0 DH
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div id="message" class="success">
+        Enter your numbers to calculate your potential profit.
+    </div>
+
+
+    <div id="warning" class="warning">
+        ⚠️ You're selling below your total cost.
+    </div>
+
+
+    <button class="copy" onclick="copyResults()">
+        📋 Copy results
+    </button>
+
+</div>
+
+</div>
+
+
+<footer>
+    ResellPro 🇲🇦 · Built for smarter reselling
+</footer>
+
+</div>
+
+
+<script>
+
+function calculate() {
+
+    const productCost =
+        Number(document.getElementById("productCost").value) || 0;
+
+    const shipping =
+        Number(document.getElementById("shipping").value) || 0;
+
+    const packaging =
+        Number(document.getElementById("packaging").value) || 0;
+
+    const sellingPrice =
+        Number(document.getElementById("sellingPrice").value) || 0;
+
+    const sales =
+        Number(document.getElementById("sales").value) || 0;
+
+
+    const totalCost =
+        productCost + shipping + packaging;
+
+    const profit =
+        sellingPrice - totalCost;
+
+    const revenue =
+        sellingPrice * sales;
+
+    const totalProfit =
+        profit * sales;
+
+    const margin =
+        sellingPrice > 0
+        ? (profit / sellingPrice) * 100
+        : 0;
+
+
+    document.getElementById("totalCost").textContent =
         totalCost.toFixed(2) + " DH";
 
-      document.getElementById("profit").textContent =
+    document.getElementById("profit").textContent =
         profit.toFixed(2) + " DH";
 
-      document.getElementById("margin").textContent =
+    document.getElementById("margin").textContent =
         margin.toFixed(1) + "%";
 
-      document.getElementById("revenue").textContent =
+    document.getElementById("revenue").textContent =
         revenue.toFixed(2) + " DH";
 
-      document.getElementById("totalProfit").textContent =
+    document.getElementById("totalProfit").textContent =
         totalProfit.toFixed(2) + " DH";
 
-      document.getElementById("error").textContent = "";
+
+    const profitElement =
+        document.getElementById("profit");
+
+    const warning =
+        document.getElementById("warning");
+
+    const message =
+        document.getElementById("message");
+
+
+    if (profit < 0) {
+
+        profitElement.className = "red";
+
+        warning.style.display = "block";
+
+        message.style.display = "none";
+
+    } else {
+
+        profitElement.className = "green";
+
+        warning.style.display = "none";
+
+        message.style.display = "block";
+
+        message.textContent =
+            "🔥 You're making " +
+            profit.toFixed(2) +
+            " DH per item.";
+
     }
-  </script>
+
+
+    localStorage.setItem(
+        "resellProData",
+        JSON.stringify({
+            productCost,
+            shipping,
+            packaging,
+            sellingPrice,
+            sales
+        })
+    );
+
+}
+
+
+function example(
+    product,
+    shipping,
+    packaging,
+    price,
+    sales
+) {
+
+    document.getElementById("productCost").value = product;
+
+    document.getElementById("shipping").value = shipping;
+
+    document.getElementById("packaging").value = packaging;
+
+    document.getElementById("sellingPrice").value = price;
+
+    document.getElementById("sales").value = sales;
+
+    calculate();
+
+}
+
+
+function copyResults() {
+
+    const profit =
+        document.getElementById("profit").textContent;
+
+    const totalProfit =
+        document.getElementById("totalProfit").textContent;
+
+    const margin =
+        document.getElementById("margin").textContent;
+
+    const revenue =
+        document.getElementById("revenue").textContent;
+
+
+    const text =
+`ResellPro 🇲🇦
+
+Revenue: ${revenue}
+Profit per item: ${profit}
+Total profit: ${totalProfit}
+Profit margin: ${margin}`;
+
+    navigator.clipboard.writeText(text);
+
+    alert("Results copied! 📋");
+
+}
+
+
+/* LOAD SAVED DATA */
+
+window.onload = function() {
+
+    const saved =
+        localStorage.getItem("resellProData");
+
+    if (!saved) return;
+
+    const data =
+        JSON.parse(saved);
+
+    document.getElementById("productCost").value =
+        data.productCost;
+
+    document.getElementById("shipping").value =
+        data.shipping;
+
+    document.getElementById("packaging").value =
+        data.packaging;
+
+    document.getElementById("sellingPrice").value =
+        data.sellingPrice;
+
+    document.getElementById("sales").value =
+        data.sales;
+
+    calculate();
+
+};
+
+</script>
 
 </body>
 </html>
