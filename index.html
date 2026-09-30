@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Reseller Calculator</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      color: #111827;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #111827;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .result {
+      background: #f3f4f6;
+      padding: 18px;
+      border-radius: 12px;
+    }
+
+    .result span {
+      display: block;
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .result strong {
+      font-size: 22px;
+    }
+
+    .profit {
+      background: #dcfce7;
+    }
+
+    .profit strong {
+      color: #166534;
+    }
+
+    .error {
+      color: #dc2626;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    @media (max-width: 500px) {
+      .results {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>🇲🇦 Reseller Calculator</h1>
+
+    <p class="subtitle">
+      Calculate your costs, profit and profit margin
+    </p>
+
+    <div class="card">
+
+      <label>Product Cost (DH)</label>
+      <input id="productCost" type="number" placeholder="20">
+
+      <label>Shipping Cost (DH)</label>
+      <input id="shipping" type="number" placeholder="10">
+
+      <label>Packaging Cost (DH)</label>
+      <input id="packaging" type="number" placeholder="3">
+
+      <label>Selling Price (DH)</label>
+      <input id="sellingPrice" type="number" placeholder="59">
+
+      <label>Number of Sales</label>
+      <input id="sales" type="number" placeholder="100">
+
+      <button onclick="calculate()">
+        Calculate Profit
+      </button>
+
+      <div id="error" class="error"></div>
+
+    </div>
+
+    <div class="card">
+
+      <div class="results">
+
+        <div class="result">
+          <span>Total Cost Per Item</span>
+          <strong id="totalCost">0 DH</strong>
+        </div>
+
+        <div class="result profit">
+          <span>Profit Per Item</span>
+          <strong id="profit">0 DH</strong>
+        </div>
+
+        <div class="result">
+          <span>Profit Margin</span>
+          <strong id="margin">0%</strong>
+        </div>
+
+        <div class="result">
+          <span>Total Revenue</span>
+          <strong id="revenue">0 DH</strong>
+        </div>
+
+        <div class="result profit">
+          <span>Total Profit</span>
+          <strong id="totalProfit">0 DH</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    function calculate() {
+
+      const productCost = Number(document.getElementById("productCost").value) || 0;
+      const shipping = Number(document.getElementById("shipping").value) || 0;
+      const packaging = Number(document.getElementById("packaging").value) || 0;
+      const sellingPrice = Number(document.getElementById("sellingPrice").value) || 0;
+      const sales = Number(document.getElementById("sales").value) || 0;
+
+      const totalCost = productCost + shipping + packaging;
+      const profit = sellingPrice - totalCost;
+
+      let margin = 0;
+
+      if (sellingPrice > 0) {
+        margin = (profit / sellingPrice) * 100;
+      }
+
+      const revenue = sellingPrice * sales;
+      const totalProfit = profit * sales;
+
+      document.getElementById("totalCost").textContent =
+        totalCost.toFixed(2) + " DH";
+
+      document.getElementById("profit").textContent =
+        profit.toFixed(2) + " DH";
+
+      document.getElementById("margin").textContent =
+        margin.toFixed(1) + "%";
+
+      document.getElementById("revenue").textContent =
+        revenue.toFixed(2) + " DH";
+
+      document.getElementById("totalProfit").textContent =
+        totalProfit.toFixed(2) + " DH";
+
+      document.getElementById("error").textContent = "";
+    }
+  </script>
+
+</body>
+</html>
