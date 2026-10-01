@@ -1,125 +1,103 @@
 
-/* =========================================================
-   RESELLPRO X — BUSINESS COMMAND CENTER
-   Complete app logic | Version 2.0
-   Matches the supplied index.html
-========================================================= */
-
 "use strict";
 
-/* -------------------- HELPERS -------------------- */
+/* =====================================================
+   RESELLPRO X 3.0 — COMPLETE APPLICATION
+   No external JavaScript libraries required.
+===================================================== */
 
 const $ = (id) => document.getElementById(id);
+const KEY = "resellprox_v3_data";
 
-const makeId = () =>
-  window.crypto && typeof window.crypto.randomUUID === "function"
-    ? window.crypto.randomUUID()
-    : "rp-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9);
-
-const escapeHTML = (value) =>
-  String(value ?? "").replace(/[&<>"']/g, (char) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
-  })[char]);
-
-const today = () => {
-  const date = new Date();
-  const offset = date.getTimezoneOffset();
-  return new Date(date.getTime() - offset * 60000)
-    .toISOString()
-    .slice(0, 10);
-};
-
-const money = (amount) => {
-  const currency = data.settings.currency || "MAD";
-  try {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(Number(amount) || 0);
-  } catch {
-    return (Number(amount) || 0).toFixed(2) + " " + currency;
-  }
-};
-
-const number = (value) => {
-  const result = Number(value);
-  return Number.isFinite(result) ? result : 0;
-};
-
-const formatDate = (value) => {
-  if (!value) return "—";
-  const date = new Date(value + "T00:00:00");
-  return Number.isNaN(date.getTime())
-    ? escapeHTML(value)
-    : date.toLocaleDateString(undefined, {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      });
-};
-
-/* -------------------- DATA -------------------- */
-
-const STORAGE_KEY = "resellpro_x_data_v2";
-
-const defaultData = {
+const freshData = () => ({
   products: [],
   sales: [],
-  settings: {
-    currency: "MAD"
-  }
-};
+  currency: "MAD"
+});
 
 function loadData() {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return { ...defaultData, settings: { ...defaultData.settings } };
+    const saved = localStorage.getItem(KEY);
+    if (!saved) return freshData();
 
     const parsed = JSON.parse(saved);
 
     return {
       products: Array.isArray(parsed.products) ? parsed.products : [],
       sales: Array.isArray(parsed.sales) ? parsed.sales : [],
-      settings: {
-        currency: parsed.settings?.currency || "MAD"
-      }
+      currency: parsed.currency || "MAD"
     };
   } catch (error) {
-    console.error("Could not load saved data:", error);
-    return { ...defaultData, settings: { ...defaultData.settings } };
+    console.error("Storage error:", error);
+    return freshData();
   }
 }
 
-let data = loadData();
-let revenueChart = null;
-let analyticsChart = null;
-let toastTimer = null;
+let db = loadData();
+let toastTimer;
 
-function saveData() {
+function save() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(KEY, JSON.stringify(db));
     return true;
   } catch (error) {
-    console.error("Could not save data:", error);
-    showToast("Could not save data. Check your browser storage.", "error");
+    console.error("Save failed:", error);
+    notify("Could not save data in this browser.", "error");
     return false;
   }
 }
 
-/* -------------------- NOTIFICATIONS -------------------- */
+function id() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+}
 
-function showToast(message, type = "success") {
+function num(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[c]);
+}
+
+function cash(value) {
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: db.currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(num(value));
+  } catch {
+    return num(value).toFixed(2) + " " + db.currency;
+  }
+}
+
+function dateToday() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+}
+
+function displayDate(value) {
+  if (!value) return "—";
+  const d = new Date(value + "T00:00:00");
+  return Number.isNaN(d.getTime())
+    ? safe(value)
+    : d.toLocaleDateString(undefined, {
+        day: "numeric", month: "short", year: "numeric"
+      });
+}
+
+function notify(message, type = "success") {
   const toast = $("toast");
   if (!toast) return;
 
   toast.textContent = message;
-  toast.className = "toast show " + type;
+  toast.className = "toast show" + (type === "error" ? " error" : "");
 
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
@@ -127,792 +105,590 @@ function showToast(message, type = "success") {
   }, 3000);
 }
 
-/* -------------------- NAVIGATION -------------------- */
+/* ---------------- NAVIGATION ---------------- */
 
-function showPage(pageName) {
-  const validPages = [
-    "dashboard",
-    "calculator",
-    "products",
-    "sales",
-    "analytics",
-    "settings"
-  ];
+const pageNames = {
+  dashboard: "Overview",
+  calculator: "Profit calculator",
+  products: "Products",
+  sales: "Sales",
+  analytics: "Analytics",
+  settings: "Settings"
+};
 
-  if (!validPages.includes(pageName)) return;
+function goTo(page) {
+  if (!pageNames[page]) return;
 
-  document.querySelectorAll(".page").forEach((page) => {
-    page.classList.toggle("active", page.id === "page-" + pageName);
+  document.querySelectorAll(".page").forEach(section => {
+    section.classList.toggle("active", section.id === "page-" + page);
   });
 
-  document.querySelectorAll(".nav-item").forEach((button) => {
-    button.classList.toggle(
-      "active",
-      button.dataset.page === pageName
-    );
+  document.querySelectorAll(".nav-link").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === page);
   });
 
-  const titles = {
-    dashboard: "Command Center",
-    calculator: "Profit Calculator",
-    products: "Your Products",
-    sales: "Sales Activity",
-    analytics: "Analytics",
-    settings: "Settings"
-  };
+  $("topHeading").textContent = pageNames[page];
+  $("sidebar").classList.remove("open");
 
-  const title = document.querySelector(".top-title");
-  if (title) title.textContent = titles[pageName];
+  if (page === "dashboard" || page === "analytics") {
+    renderCharts();
+  }
+}
 
+document.addEventListener("click", event => {
+  const nav = event.target.closest("[data-page]");
+  const go = event.target.closest("[data-go]");
+
+  if (nav) {
+    event.preventDefault();
+    goTo(nav.dataset.page);
+  }
+
+  if (go) {
+    event.preventDefault();
+    goTo(go.dataset.go);
+  }
+});
+
+$("mobileMenu").addEventListener("click", () => {
+  $("sidebar").classList.toggle("open");
+});
+
+document.addEventListener("click", event => {
   const sidebar = $("sidebar");
-  if (sidebar) sidebar.classList.remove("open");
+  const menu = $("mobileMenu");
 
-  document.body.classList.remove("menu-open");
-
-  if (pageName === "analytics") renderCharts();
-  if (pageName === "dashboard") renderRevenueChart();
-}
-
-function setupNavigation() {
-  document.querySelectorAll("[data-page]").forEach((button) => {
-    button.addEventListener("click", () => {
-      showPage(button.dataset.page);
-    });
-  });
-
-  document.querySelectorAll("[data-go]").forEach((button) => {
-    button.addEventListener("click", () => {
-      showPage(button.dataset.go);
-    });
-  });
-
-  const menuToggle = $("menuToggle");
-  if (menuToggle) {
-    menuToggle.addEventListener("click", () => {
-      const sidebar = $("sidebar");
-      if (!sidebar) return;
-      sidebar.classList.toggle("open");
-      document.body.classList.toggle(
-        "menu-open",
-        sidebar.classList.contains("open")
-      );
-    });
+  if (
+    sidebar.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    !menu.contains(event.target)
+  ) {
+    sidebar.classList.remove("open");
   }
+});
 
-  document.addEventListener("click", (event) => {
-    const sidebar = $("sidebar");
-    const toggle = $("menuToggle");
+/* ---------------- MODAL ---------------- */
 
-    if (
-      sidebar &&
-      sidebar.classList.contains("open") &&
-      !sidebar.contains(event.target) &&
-      toggle &&
-      !toggle.contains(event.target)
-    ) {
-      sidebar.classList.remove("open");
-      document.body.classList.remove("menu-open");
-    }
-  });
-}
-
-/* -------------------- CALCULATOR -------------------- */
-
-function getCalculatorValues() {
-  const buy = Math.max(0, number($("buyPrice")?.value));
-  const sell = Math.max(0, number($("sellPrice")?.value));
-  const shipping = Math.max(0, number($("shippingCost")?.value));
-  const other = Math.max(0, number($("otherCost")?.value));
-
-  const cost = buy + shipping + other;
-  const profit = sell - cost;
-  const margin = sell > 0 ? (profit / sell) * 100 : 0;
-  const roi = cost > 0 ? (profit / cost) * 100 : 0;
-
-  return { buy, sell, shipping, other, cost, profit, margin, roi };
-}
-
-function calculate() {
-  const values = getCalculatorValues();
-
-  if ($("calcProfit")) $("calcProfit").textContent = money(values.profit);
-  if ($("calcCost")) $("calcCost").textContent = money(values.cost);
-  if ($("calcMargin")) $("calcMargin").textContent = values.margin.toFixed(1) + "%";
-  if ($("calcROI")) $("calcROI").textContent = values.roi.toFixed(1) + "%";
-  if ($("calcRevenue")) $("calcRevenue").textContent = money(values.sell);
-
-  const profitElement = $("calcProfit");
-  if (profitElement) {
-    profitElement.style.color = values.profit < 0 ? "#ff6464" : "";
-  }
-
-  const message = $("calcMessage");
-  if (message) {
-    if (values.sell === 0 && values.cost === 0) {
-      message.textContent = "Enter your prices to see your potential profit.";
-    } else if (values.profit > 0) {
-      message.textContent = "You're making a profit on this item.";
-    } else if (values.profit < 0) {
-      message.textContent = "Your costs are higher than your selling price.";
-    } else {
-      message.textContent = "You're breaking even.";
-    }
-  }
-}
-
-function setupCalculator() {
-  ["buyPrice", "sellPrice", "shippingCost", "otherCost"].forEach((id) => {
-    const field = $(id);
-    if (field) field.addEventListener("input", calculate);
-  });
-
-  const button = $("calculateBtn");
-  if (button) {
-    button.addEventListener("click", () => {
-      calculate();
-      showToast("Profit calculation updated.");
-    });
-  }
-}
-
-/* -------------------- MODAL SYSTEM -------------------- */
-
-function openModal(title, content) {
-  const modal = $("modal");
-  const modalTitle = $("modalTitle");
-  const modalBody = $("modalBody");
-
-  if (!modal || !modalTitle || !modalBody) return;
-
-  modalTitle.textContent = title;
-  modalBody.innerHTML = content;
-  modal.classList.add("show");
-  modal.setAttribute("aria-hidden", "false");
+function openModal(title, html) {
+  $("modalTitle").textContent = title;
+  $("modalContent").innerHTML = html;
+  $("modalLayer").classList.add("open");
+  $("modalLayer").setAttribute("aria-hidden", "false");
 }
 
 function closeModal() {
-  const modal = $("modal");
-  if (!modal) return;
-
-  modal.classList.remove("show");
-  modal.setAttribute("aria-hidden", "true");
+  $("modalLayer").classList.remove("open");
+  $("modalLayer").setAttribute("aria-hidden", "true");
+  $("modalContent").innerHTML = "";
 }
 
-function setupModal() {
-  const closeButton = $("closeModal");
-  const modal = $("modal");
+$("modalClose").addEventListener("click", closeModal);
 
-  if (closeButton) closeButton.addEventListener("click", closeModal);
+$("modalLayer").addEventListener("click", event => {
+  if (event.target === $("modalLayer")) closeModal();
+});
 
-  if (modal) {
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) closeModal();
-    });
-  }
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeModal();
+});
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeModal();
-  });
+/* ---------------- CALCULATOR ---------------- */
+
+function getCalc() {
+  const buy = Math.max(0, num($("calcBuy").value));
+  const sell = Math.max(0, num($("calcSell").value));
+  const shipping = Math.max(0, num($("calcShipping").value));
+  const other = Math.max(0, num($("calcOther").value));
+  const quantity = Math.max(1, Math.floor(num($("calcQuantity").value) || 1));
+
+  const unitCost = buy + shipping + other;
+  const revenue = sell * quantity;
+  const cost = unitCost * quantity;
+  const profit = revenue - cost;
+
+  return {
+    buy, sell, shipping, other, quantity,
+    unitCost, revenue, cost, profit,
+    unitProfit: sell - unitCost,
+    margin: revenue ? profit / revenue * 100 : 0,
+    roi: cost ? profit / cost * 100 : 0
+  };
 }
 
-/* -------------------- PRODUCTS -------------------- */
+function calculate() {
+  const v = getCalc();
 
-function renderProducts() {
-  const list = $("productList");
-  const count = $("productCount");
+  $("calcResultProfit").textContent = cash(v.profit);
+  $("calcResultRevenue").textContent = cash(v.revenue);
+  $("calcResultCost").textContent = cash(v.cost);
+  $("calcResultMargin").textContent = v.margin.toFixed(1) + "%";
+  $("calcResultROI").textContent = v.roi.toFixed(1) + "%";
+  $("calcResultUnit").textContent = cash(v.unitProfit);
 
-  if (!list) return;
+  $("calcResultProfit").style.color =
+    v.profit < 0 ? "var(--red)" : "var(--green)";
 
-  if (count) {
-    count.textContent = data.products.length +
-      (data.products.length === 1 ? " product" : " products");
-  }
-
-  if (data.products.length === 0) {
-    list.innerHTML =
-      '<tr><td colspan="5" class="empty-cell">No products yet. Add your first product.</td></tr>';
-    return;
-  }
-
-  list.innerHTML = data.products.map((product) => `
-    <tr>
-      <td><strong>${escapeHTML(product.name)}</strong></td>
-      <td>${money(product.buyPrice)}</td>
-      <td>${money(product.sellPrice)}</td>
-      <td>${number(product.stock)}</td>
-      <td>
-        <button class="text-btn" data-edit-product="${escapeHTML(product.id)}">Edit</button>
-        <button class="text-btn" data-delete-product="${escapeHTML(product.id)}">Delete</button>
-      </td>
-    </tr>
-  `).join("");
+  $("calcResultMessage").textContent =
+    v.revenue === 0 && v.cost === 0
+      ? "Enter your numbers to get started."
+      : v.profit > 0
+        ? "This product is making a profit."
+        : v.profit < 0
+          ? "Your costs are higher than your revenue."
+          : "This product is breaking even.";
 }
+
+["calcBuy", "calcSell", "calcShipping", "calcOther", "calcQuantity"]
+  .forEach(id => $(id).addEventListener("input", calculate));
+
+$("runCalculator").addEventListener("click", () => {
+  calculate();
+  notify("Calculation updated.");
+});
+
+/* ---------------- PRODUCTS ---------------- */
 
 function productForm(product = null) {
   const editing = Boolean(product);
 
   openModal(editing ? "Edit product" : "Add a product", `
-    <form id="productForm" class="modal-form">
+    <form class="modal-form" id="productForm">
       <label>Product name
         <input name="name" required maxlength="100"
           placeholder="e.g. Wireless headphones"
-          value="${escapeHTML(product?.name || "")}">
+          value="${safe(product?.name || "")}">
       </label>
-
-      <label>Buying price (${escapeHTML(data.settings.currency)})
-        <input name="buyPrice" type="number" min="0" step="0.01" required
-          value="${editing ? number(product.buyPrice) : ""}">
+      <label>Buying price (${safe(db.currency)})
+        <input name="buy" type="number" min="0" step="0.01" required
+          value="${editing ? num(product.buy) : ""}">
       </label>
-
-      <label>Selling price (${escapeHTML(data.settings.currency)})
-        <input name="sellPrice" type="number" min="0" step="0.01" required
-          value="${editing ? number(product.sellPrice) : ""}">
+      <label>Selling price (${safe(db.currency)})
+        <input name="sell" type="number" min="0" step="0.01" required
+          value="${editing ? num(product.sell) : ""}">
       </label>
-
       <label>Stock quantity
         <input name="stock" type="number" min="0" step="1" required
-          value="${editing ? number(product.stock) : "1"}">
+          value="${editing ? num(product.stock) : 1}">
       </label>
-
-      <button class="primary-btn full-btn" type="submit">
+      <button class="button button-primary" type="submit">
         ${editing ? "Save changes" : "Add product"}
       </button>
     </form>
   `);
 
-  const form = $("productForm");
-  if (!form) return;
-
-  form.addEventListener("submit", (event) => {
+  $("productForm").addEventListener("submit", event => {
     event.preventDefault();
 
-    const values = new FormData(form);
-    const name = String(values.get("name") || "").trim();
-    const buyPrice = number(values.get("buyPrice"));
-    const sellPrice = number(values.get("sellPrice"));
-    const stock = number(values.get("stock"));
+    const form = new FormData(event.currentTarget);
+    const name = String(form.get("name") || "").trim();
+    const buy = num(form.get("buy"));
+    const sell = num(form.get("sell"));
+    const stock = num(form.get("stock"));
 
-    if (!name || buyPrice < 0 || sellPrice < 0 || stock < 0 ||
-        !Number.isInteger(stock)) {
-      showToast("Please enter valid product details.", "error");
+    if (!name || buy < 0 || sell < 0 ||
+        stock < 0 || !Number.isInteger(stock)) {
+      notify("Check your product details.", "error");
       return;
     }
 
     if (editing) {
       product.name = name;
-      product.buyPrice = buyPrice;
-      product.sellPrice = sellPrice;
+      product.buy = buy;
+      product.sell = sell;
       product.stock = stock;
     } else {
-      data.products.push({
-        id: makeId(),
-        name,
-        buyPrice,
-        sellPrice,
-        stock,
-        createdAt: today()
+      db.products.push({
+        id: id(), name, buy, sell, stock
       });
     }
 
-    saveData();
+    save();
     closeModal();
     renderAll();
-    showToast(editing ? "Product updated." : "Product added.");
+    notify(editing ? "Product updated." : "Product added.");
   });
 }
 
-function deleteProduct(id) {
-  const product = data.products.find((item) => item.id === id);
-  if (!product) return;
+function renderProducts() {
+  const rows = $("productRows");
 
-  const usedInSales = data.sales.some((sale) => sale.productId === id);
-
-  if (usedInSales) {
-    showToast("This product has sales. Keep it to preserve your records.", "error");
-    return;
+  if (!db.products.length) {
+    rows.innerHTML = '<tr><td colspan="5" class="empty">No products yet. Add your first product.</td></tr>';
+  } else {
+    rows.innerHTML = db.products.map(p => `
+      <tr>
+        <td><strong>${safe(p.name)}</strong></td>
+        <td>${cash(p.buy)}</td>
+        <td>${cash(p.sell)}</td>
+        <td>${num(p.stock)}</td>
+        <td>
+          <button class="table-action" data-edit-product="${safe(p.id)}">Edit</button>
+          <button class="table-action delete" data-delete-product="${safe(p.id)}">Delete</button>
+        </td>
+      </tr>
+    `).join("");
   }
 
-  if (!confirm(`Delete "${product.name}"? This cannot be undone.`)) return;
+  const units = db.products.reduce((sum, p) => sum + num(p.stock), 0);
+  const value = db.products.reduce((sum, p) => sum + num(p.buy) * num(p.stock), 0);
 
-  data.products = data.products.filter((item) => item.id !== id);
-  saveData();
-  renderAll();
-  showToast("Product deleted.");
+  $("productTypes").textContent = db.products.length;
+  $("stockUnits").textContent = units;
+  $("stockValue").textContent = cash(value);
+  $("productCount").textContent = db.products.length + " PRODUCTS";
+  $("navProductCount").textContent = db.products.length;
 }
 
-function setupProducts() {
-  const addButton = $("addProductBtn");
-  if (addButton) addButton.addEventListener("click", () => productForm());
+$("newProduct").addEventListener("click", () => productForm());
 
-  const list = $("productList");
-  if (!list) return;
+$("productRows").addEventListener("click", event => {
+  const edit = event.target.closest("[data-edit-product]");
+  const del = event.target.closest("[data-delete-product]");
 
-  list.addEventListener("click", (event) => {
-    const editButton = event.target.closest("[data-edit-product]");
-    const deleteButton = event.target.closest("[data-delete-product]");
-
-    if (editButton) {
-      const product = data.products.find(
-        (item) => item.id === editButton.dataset.editProduct
-      );
-      if (product) productForm(product);
-    }
-
-    if (deleteButton) {
-      deleteProduct(deleteButton.dataset.deleteProduct);
-    }
-  });
-}
-
-/* -------------------- SALES -------------------- */
-
-function renderSales() {
-  const list = $("salesList");
-  if (!list) return;
-
-  if (data.sales.length === 0) {
-    list.innerHTML =
-      '<tr><td colspan="6" class="empty-cell">No sales recorded yet.</td></tr>';
-    return;
+  if (edit) {
+    const product = db.products.find(p => p.id === edit.dataset.editProduct);
+    if (product) productForm(product);
   }
 
-  const sorted = [...data.sales].sort((a, b) =>
-    String(b.date).localeCompare(String(a.date))
-  );
+  if (del) {
+    const product = db.products.find(p => p.id === del.dataset.deleteProduct);
+    if (!product) return;
 
-  list.innerHTML = sorted.map((sale) => `
-    <tr>
-      <td><strong>${escapeHTML(sale.productName)}</strong></td>
-      <td>${formatDate(sale.date)}</td>
-      <td>${number(sale.quantity)}</td>
-      <td>${money(sale.revenue)}</td>
-      <td>${money(sale.profit)}</td>
-      <td><button class="text-btn" data-delete-sale="${escapeHTML(sale.id)}">Delete</button></td>
-    </tr>
-  `).join("");
-}
+    if (!confirm("Delete " + product.name + "? Historical sales will remain.")) return;
+
+    db.products = db.products.filter(p => p.id !== product.id);
+    save();
+    renderAll();
+    notify("Product deleted.");
+  }
+});
+
+/* ---------------- SALES ---------------- */
 
 function saleForm() {
-  if (data.products.length === 0) {
-    showToast("Add a product before recording a sale.", "error");
-    showPage("products");
+  if (!db.products.length) {
+    notify("Add a product before recording a sale.", "error");
+    goTo("products");
     return;
   }
 
-  const options = data.products.map((product) => `
-    <option value="${escapeHTML(product.id)}">
-      ${escapeHTML(product.name)} — ${number(product.stock)} in stock
-    </option>
-  `).join("");
+  const available = db.products.filter(p => num(p.stock) > 0);
+
+  if (!available.length) {
+    notify("There are no products with available stock.", "error");
+    return;
+  }
+
+  const options = available.map(p =>
+    `<option value="${safe(p.id)}">${safe(p.name)} — ${num(p.stock)} available</option>`
+  ).join("");
 
   openModal("Record a sale", `
-    <form id="saleForm" class="modal-form">
-      <label>Product
-        <select name="productId" id="saleProduct" required>${options}</select>
+    <form class="modal-form" id="saleForm">
+      <label>Choose product
+        <select name="productId" id="saleProduct">${options}</select>
       </label>
-
-      <div class="sale-product-info" id="saleProductInfo"></div>
-
-      <label>Quantity sold
+      <div id="saleInfo" class="sale-product-info"></div>
+      <label>Quantity
         <input name="quantity" type="number" min="1" step="1" value="1" required>
       </label>
-
-      <label>Selling price per item (${escapeHTML(data.settings.currency)})
-        <input name="sellPrice" type="number" min="0" step="0.01" required>
+      <label>Selling price per item (${safe(db.currency)})
+        <input name="price" id="salePrice" type="number" min="0" step="0.01" required>
       </label>
-
-      <label>Date
-        <input name="date" type="date" value="${today()}" required>
+      <label>Sale date
+        <input name="date" type="date" value="${dateToday()}" required>
       </label>
-
-      <button class="primary-btn full-btn" type="submit">Save sale</button>
+      <button class="button button-primary" type="submit">Save sale</button>
     </form>
   `);
 
   const form = $("saleForm");
   const select = $("saleProduct");
-  const priceInput = form?.elements.sellPrice;
-  const quantityInput = form?.elements.quantity;
+  const price = $("salePrice");
+  const info = $("saleInfo");
 
-  function updateSaleInfo() {
-    const product = data.products.find((item) => item.id === select.value);
-    if (!product) return;
+  function updateInfo() {
+    const p = db.products.find(item => item.id === select.value);
+    if (!p) return;
 
-    priceInput.value = number(product.sellPrice);
-
-    const info = $("saleProductInfo");
-    if (info) {
-      info.textContent =
-        `Buying price: ${money(product.buyPrice)} · Available stock: ${number(product.stock)}`;
-    }
+    price.value = num(p.sell);
+    info.textContent = "Buying price: " + cash(p.buy) +
+      " · Available stock: " + num(p.stock);
   }
 
-  if (select) {
-    select.addEventListener("change", updateSaleInfo);
-    updateSaleInfo();
-  }
+  select.addEventListener("change", updateInfo);
+  updateInfo();
 
-  if (!form) return;
-
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", event => {
     event.preventDefault();
 
-    const product = data.products.find(
-      (item) => item.id === select.value
-    );
-
-    const quantity = number(quantityInput.value);
-    const sellPrice = number(priceInput.value);
+    const p = db.products.find(item => item.id === select.value);
+    const quantity = num(form.elements.quantity.value);
+    const sellPrice = num(price.value);
     const date = form.elements.date.value;
 
-    if (!product || !Number.isInteger(quantity) || quantity < 1 ||
+    if (!p || !Number.isInteger(quantity) || quantity < 1 ||
         sellPrice < 0 || !date) {
-      showToast("Please enter valid sale details.", "error");
+      notify("Enter valid sale details.", "error");
       return;
     }
 
-    if (quantity > number(product.stock)) {
-      showToast("Not enough stock available.", "error");
+    if (quantity > num(p.stock)) {
+      notify("Not enough stock available.", "error");
       return;
     }
 
-    const unitCost = number(product.buyPrice);
     const revenue = sellPrice * quantity;
-    const profit = (sellPrice - unitCost) * quantity;
+    const profit = (sellPrice - num(p.buy)) * quantity;
 
-    data.sales.push({
-      id: makeId(),
-      productId: product.id,
-      productName: product.name,
+    db.sales.push({
+      id: id(),
+      productId: p.id,
+      productName: p.name,
       quantity,
       sellPrice,
-      unitCost,
+      unitCost: num(p.buy),
       revenue,
       profit,
       date
     });
 
-    product.stock -= quantity;
+    p.stock -= quantity;
 
-    saveData();
+    save();
     closeModal();
     renderAll();
-    showToast("Sale recorded successfully.");
+    notify("Sale recorded successfully.");
   });
 }
 
-function deleteSale(id) {
-  const sale = data.sales.find((item) => item.id === id);
+function renderSales() {
+  const rows = $("saleRows");
+  const sorted = [...db.sales].sort((a, b) => b.date.localeCompare(a.date));
+
+  if (!sorted.length) {
+    rows.innerHTML = '<tr><td colspan="6" class="empty">No sales recorded yet.</td></tr>';
+  } else {
+    rows.innerHTML = sorted.map(s => `
+      <tr>
+        <td><strong>${safe(s.productName)}</strong></td>
+        <td>${displayDate(s.date)}</td>
+        <td>${num(s.quantity)}</td>
+        <td>${cash(s.revenue)}</td>
+        <td>${cash(s.profit)}</td>
+        <td><button class="table-action delete" data-delete-sale="${safe(s.id)}">Delete</button></td>
+      </tr>
+    `).join("");
+  }
+
+  const revenue = db.sales.reduce((sum, s) => sum + num(s.revenue), 0);
+  const profit = db.sales.reduce((sum, s) => sum + num(s.profit), 0);
+  const units = db.sales.reduce((sum, s) => sum + num(s.quantity), 0);
+
+  $("salesRevenue").textContent = cash(revenue);
+  $("salesProfit").textContent = cash(profit);
+  $("salesUnits").textContent = units;
+}
+
+$("newSale").addEventListener("click", saleForm);
+
+$("saleRows").addEventListener("click", event => {
+  const button = event.target.closest("[data-delete-sale]");
+  if (!button) return;
+
+  const sale = db.sales.find(s => s.id === button.dataset.deleteSale);
   if (!sale) return;
 
-  if (!confirm("Delete this sale? Its quantity will be returned to stock.")) {
-    return;
-  }
+  if (!confirm("Delete this sale and return its quantity to stock?")) return;
 
-  const product = data.products.find(
-    (item) => item.id === sale.productId
-  );
+  const product = db.products.find(p => p.id === sale.productId);
+  if (product) product.stock += num(sale.quantity);
 
-  if (product) {
-    product.stock = number(product.stock) + number(sale.quantity);
-  }
+  db.sales = db.sales.filter(s => s.id !== sale.id);
 
-  data.sales = data.sales.filter((item) => item.id !== id);
-
-  saveData();
+  save();
   renderAll();
-  showToast("Sale deleted and stock restored.");
-}
+  notify("Sale deleted. Stock restored.");
+});
 
-function setupSales() {
-  const addButton = $("addSaleBtn");
-  if (addButton) addButton.addEventListener("click", saleForm);
+/* ---------------- TOTALS + DASHBOARD ---------------- */
 
-  const list = $("salesList");
-  if (!list) return;
-
-  list.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-delete-sale]");
-    if (button) deleteSale(button.dataset.deleteSale);
-  });
-}
-
-/* -------------------- DASHBOARD -------------------- */
-
-function getTotals() {
-  const revenue = data.sales.reduce(
-    (total, sale) => total + number(sale.revenue), 0
-  );
-
-  const profit = data.sales.reduce(
-    (total, sale) => total + number(sale.profit), 0
-  );
-
-  const units = data.sales.reduce(
-    (total, sale) => total + number(sale.quantity), 0
-  );
+function totals() {
+  const revenue = db.sales.reduce((sum, s) => sum + num(s.revenue), 0);
+  const profit = db.sales.reduce((sum, s) => sum + num(s.profit), 0);
+  const units = db.sales.reduce((sum, s) => sum + num(s.quantity), 0);
 
   return {
     revenue,
     profit,
     units,
-    salesCount: data.sales.length,
-    averageSale: data.sales.length ? revenue / data.sales.length : 0
+    count: db.sales.length,
+    average: db.sales.length ? revenue / db.sales.length : 0
   };
 }
 
 function renderDashboard() {
-  const totals = getTotals();
+  const t = totals();
 
-  if ($("totalRevenue")) $("totalRevenue").textContent = money(totals.revenue);
-  if ($("totalProfit")) $("totalProfit").textContent = money(totals.profit);
-  if ($("totalProducts")) $("totalProducts").textContent = data.products.length;
-  if ($("totalSales")) $("totalSales").textContent = totals.salesCount;
+  $("dashRevenue").textContent = cash(t.revenue);
+  $("dashProfit").textContent = cash(t.profit);
+  $("dashProducts").textContent = db.products.length;
+  $("dashSales").textContent = t.count;
 
-  const recent = $("recentSales");
-  if (!recent) return;
+  const recent = [...db.sales]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 5);
 
-  const sorted = [...data.sales].sort((a, b) =>
-    String(b.date).localeCompare(String(a.date))
-  ).slice(0, 5);
-
-  if (sorted.length === 0) {
-    recent.innerHTML =
-      '<tr><td colspan="4" class="empty-cell">Your recent sales will appear here.</td></tr>';
-    return;
-  }
-
-  recent.innerHTML = sorted.map((sale) => `
-    <tr>
-      <td><strong>${escapeHTML(sale.productName)}</strong></td>
-      <td>${formatDate(sale.date)}</td>
-      <td>${money(sale.revenue)}</td>
-      <td>${money(sale.profit)}</td>
-    </tr>
-  `).join("");
+  $("recentSales").innerHTML = recent.length
+    ? recent.map(s => `
+      <tr>
+        <td><strong>${safe(s.productName)}</strong></td>
+        <td>${displayDate(s.date)}</td>
+        <td>${num(s.quantity)}</td>
+        <td>${cash(s.revenue)}</td>
+        <td>${cash(s.profit)}</td>
+      </tr>
+    `).join("")
+    : '<tr><td colspan="5" class="empty">No sales yet. Your activity will appear here.</td></tr>';
 }
 
-/* -------------------- ANALYTICS -------------------- */
+/* ---------------- ANALYTICS ---------------- */
 
 function renderAnalytics() {
-  const totals = getTotals();
+  const t = totals();
 
-  if ($("analyticsRevenue")) {
-    $("analyticsRevenue").textContent = money(totals.revenue);
-  }
-  if ($("analyticsProfit")) {
-    $("analyticsProfit").textContent = money(totals.profit);
-  }
-  if ($("averageSale")) {
-    $("averageSale").textContent = money(totals.averageSale);
-  }
-  if ($("unitsSold")) {
-    $("unitsSold").textContent = totals.units;
-  }
+  $("analyticsRevenue").textContent = cash(t.revenue);
+  $("analyticsProfit").textContent = cash(t.profit);
+  $("analyticsAverage").textContent = cash(t.average);
+  $("analyticsUnits").textContent = t.units;
+
+  const byProduct = {};
+
+  db.sales.forEach(s => {
+    const key = s.productId || s.productName;
+    if (!byProduct[key]) {
+      byProduct[key] = { name: s.productName, quantity: 0, revenue: 0 };
+    }
+    byProduct[key].quantity += num(s.quantity);
+    byProduct[key].revenue += num(s.revenue);
+  });
+
+  const top = Object.values(byProduct)
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5);
+
+  $("topProducts").innerHTML = top.length
+    ? top.map((p, index) => `
+      <div class="top-product">
+        <div class="top-product-rank">${index + 1}</div>
+        <div class="top-product-info">
+          <strong>${safe(p.name)}</strong>
+          <small>${p.quantity} units sold</small>
+        </div>
+        <div class="top-product-total">${cash(p.revenue)}</div>
+      </div>
+    `).join("")
+    : '<p class="empty">Record sales to see product performance.</p>';
 }
 
-/* -------------------- CHARTS -------------------- */
+/* ---------------- CSS-ONLY CHARTS ---------------- */
 
-function getLastSevenDays() {
-  const days = [];
+function lastSevenDays() {
+  const result = [];
 
   for (let i = 6; i >= 0; i--) {
-    const date = new Date();
-    date.setHours(0, 0, 0, 0);
-    date.setDate(date.getDate() - i);
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - i);
 
     const key = [
-      date.getFullYear(),
-      String(date.getMonth() + 1).padStart(2, "0"),
-      String(date.getDate()).padStart(2, "0")
+      d.getFullYear(),
+      String(d.getMonth() + 1).padStart(2, "0"),
+      String(d.getDate()).padStart(2, "0")
     ].join("-");
 
-    days.push({
+    result.push({
       key,
-      label: date.toLocaleDateString(undefined, { weekday: "short" }),
-      revenue: 0,
-      profit: 0
+      label: d.toLocaleDateString(undefined, { weekday: "short" }),
+      revenue: 0
     });
   }
 
-  data.sales.forEach((sale) => {
-    const day = days.find((item) => item.key === sale.date);
-    if (day) {
-      day.revenue += number(sale.revenue);
-      day.profit += number(sale.profit);
-    }
+  db.sales.forEach(s => {
+    const day = result.find(d => d.key === s.date);
+    if (day) day.revenue += num(s.revenue);
   });
 
-  return days;
+  return result;
 }
 
-function chartOptions() {
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          color: "#a8b5ae",
-          usePointStyle: true,
-          padding: 18
-        }
-      }
-    },
-    scales: {
-      x: {
-        ticks: { color: "#8b9991" },
-        grid: { display: false }
-      },
-      y: {
-        beginAtZero: true,
-        ticks: {
-          color: "#8b9991",
-          callback: (value) => {
-            const currency = data.settings.currency;
-            return currency + " " + value;
-          }
-        },
-        grid: { color: "rgba(255,255,255,0.07)" }
-      }
-    }
-  };
-}
+function chartHTML() {
+  const days = lastSevenDays();
+  const max = Math.max(1, ...days.map(d => d.revenue));
 
-function renderRevenueChart() {
-  const canvas = $("revenueChart");
-  if (!canvas || typeof Chart === "undefined") return;
+  return days.map(d => {
+    const height = d.revenue ? Math.max(4, d.revenue / max * 100) : 3;
 
-  const days = getLastSevenDays();
-
-  if (revenueChart) revenueChart.destroy();
-
-  revenueChart = new Chart(canvas, {
-    type: "line",
-    data: {
-      labels: days.map((day) => day.label),
-      datasets: [{
-        label: "Revenue",
-        data: days.map((day) => day.revenue),
-        borderColor: "#35e58a",
-        backgroundColor: "rgba(53,229,138,0.12)",
-        fill: true,
-        tension: 0.4,
-        pointRadius: 3
-      }]
-    },
-    options: chartOptions()
-  });
+    return `
+      <div class="chart-column" title="${safe(d.label)}: ${cash(d.revenue)}">
+        <div class="chart-bar" style="height:${height}%"></div>
+        <span class="chart-label">${safe(d.label)}</span>
+      </div>
+    `;
+  }).join("");
 }
 
 function renderCharts() {
-  renderRevenueChart();
-
-  const canvas = $("analyticsChart");
-  if (!canvas || typeof Chart === "undefined") return;
-
-  const days = getLastSevenDays();
-
-  if (analyticsChart) analyticsChart.destroy();
-
-  analyticsChart = new Chart(canvas, {
-    type: "bar",
-    data: {
-      labels: days.map((day) => day.label),
-      datasets: [
-        {
-          label: "Revenue",
-          data: days.map((day) => day.revenue),
-          backgroundColor: "rgba(53,229,138,0.75)",
-          borderRadius: 5
-        },
-        {
-          label: "Profit",
-          data: days.map((day) => day.profit),
-          backgroundColor: "rgba(93,157,255,0.65)",
-          borderRadius: 5
-        }
-      ]
-    },
-    options: chartOptions()
-  });
+  const html = chartHTML();
+  $("dashboardChart").innerHTML = html;
+  $("analyticsChart").innerHTML = html;
 }
 
-/* -------------------- SETTINGS -------------------- */
+/* ---------------- SETTINGS ---------------- */
 
-function setupSettings() {
-  const currencySelect = $("currencySelect");
+$("currency").value = db.currency;
 
-  if (currencySelect) {
-    currencySelect.value = data.settings.currency;
+$("currency").addEventListener("change", () => {
+  db.currency = $("currency").value;
+  save();
+  renderAll();
+  notify("Currency changed to " + db.currency + ".");
+});
 
-    currencySelect.addEventListener("change", () => {
-      data.settings.currency = currencySelect.value;
-      saveData();
-      renderAll();
-      showToast("Currency updated to " + currencySelect.value + ".");
-    });
-  }
+$("clearData").addEventListener("click", () => {
+  const confirmed = confirm(
+    "Delete all products and sales saved in this browser? This cannot be undone."
+  );
 
-  const clearButton = $("clearDataBtn");
+  if (!confirmed) return;
 
-  if (clearButton) {
-    clearButton.addEventListener("click", () => {
-      const confirmed = confirm(
-        "This will permanently delete all products and sales saved in this browser. Continue?"
-      );
+  const selectedCurrency = db.currency;
+  db = freshData();
+  db.currency = selectedCurrency;
 
-      if (!confirmed) return;
+  save();
+  renderAll();
+  notify("Workspace data cleared.");
+});
 
-      data = {
-        products: [],
-        sales: [],
-        settings: {
-          currency: data.settings.currency
-        }
-      };
-
-      saveData();
-      renderAll();
-      showToast("Workspace data cleared.");
-    });
-  }
-}
-
-/* -------------------- FULL REFRESH -------------------- */
+/* ---------------- RENDER EVERYTHING ---------------- */
 
 function renderAll() {
+  $("currency").value = db.currency;
   renderDashboard();
   renderProducts();
   renderSales();
   renderAnalytics();
-  renderRevenueChart();
-
-  const currencySelect = $("currencySelect");
-  if (currencySelect) {
-    currencySelect.value = data.settings.currency;
-  }
-
+  renderCharts();
   calculate();
 }
 
-/* -------------------- START APPLICATION -------------------- */
+/* ---------------- START ---------------- */
 
-function startResellPro() {
-  setupNavigation();
-  setupCalculator();
-  setupModal();
-  setupProducts();
-  setupSales();
-  setupSettings();
-
+function startApp() {
   renderAll();
-
-  console.log("ResellPro X loaded successfully.");
+  goTo("dashboard");
+  console.log("ResellPro X 3.0 is ready.");
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", startResellPro);
-} else {
-  startResellPro();
-}
+startApp();
