@@ -1,166 +1,266 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090d0b">
-  <title>ResellPro X — Business Command Center</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ResellPro X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090a;--panel:#111517;--panel2:#181d20;--line:#252c30;--tx:#e8eeea;--mut:#8a9892;--em:#10d98a;--emd:#0a9c63;--red:#ff6b6b;--amb:#f5b942}
+*{box-sizing:border-box;margin:0}
+body{font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh}
+nav{width:220px;background:var(--panel);border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px}
+.logo{font-weight:800;font-size:19px;padding:0 10px 18px}.logo b{color:var(--em)}
+nav button{background:none;border:0;color:var(--mut);text-align:left;padding:11px 12px;border-radius:9px;font:600 14px inherit;font-family:inherit;cursor:pointer;transition:.15s}
+nav button:hover{color:var(--tx);background:var(--panel2)}
+nav button.on{color:var(--em);background:rgba(16,217,138,.1)}
+main{flex:1;padding:28px;max-width:1100px;margin:0 auto;width:100%}
+h1{font-size:26px;font-weight:800;margin-bottom:4px}.sub{color:var(--mut);margin-bottom:22px;font-size:14px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h3{font-size:14px;font-weight:600;color:var(--mut);margin-bottom:10px}
+.big{font-size:28px;font-weight:800}.pos{color:var(--em)}.neg{color:var(--red)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.btn{background:var(--em);color:#02150d;border:0;border-radius:10px;padding:10px 16px;font:800 14px Manrope,sans-serif;cursor:pointer;transition:.15s}
+.btn:hover{background:#3ff0a6}.btn.g{background:var(--panel2);color:var(--tx);border:1px solid var(--line)}.btn.g:hover{border-color:var(--em)}
+.btn.d{background:none;color:var(--red);border:1px solid var(--line)}.btn.sm{padding:6px 10px;font-size:12px}
+input,select{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--tx);border-radius:9px;padding:10px 12px;font:600 14px Manrope,sans-serif;outline:none}
+input:focus,select:focus,.btn:focus-visible,nav button:focus-visible{border-color:var(--em);outline:2px solid rgba(16,217,138,.4)}
+label{font-size:12px;color:var(--mut);font-weight:600;display:block;margin-bottom:5px}
+.form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;color:var(--mut);font-weight:600;font-size:12px;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid var(--line)}
+.wrap{overflow-x:auto}
+.pimg{width:42px;height:42px;border-radius:9px;object-fit:cover;background:var(--panel2);display:grid;place-items:center;color:var(--mut)}
+.tag{font-size:11px;font-weight:800;padding:3px 8px;border-radius:99px;background:rgba(245,185,66,.14);color:var(--amb)}
+.tag.ok{background:rgba(16,217,138,.14);color:var(--em)}.tag.bad{background:rgba(255,107,107,.14);color:var(--red)}
+dialog{background:var(--panel);color:var(--tx);border:1px solid var(--line);border-radius:16px;padding:22px;width:min(480px,94vw)}
+dialog::backdrop{background:rgba(0,0,0,.7)}
+.empty{color:var(--mut);padding:26px;text-align:center;font-size:14px}
+.seg{display:inline-flex;background:var(--panel2);border-radius:10px;padding:3px}.seg button{background:none;border:0;color:var(--mut);padding:7px 14px;border-radius:8px;font:700 13px Manrope,sans-serif;cursor:pointer}.seg button.on{background:var(--em);color:#02150d}
+svg text{fill:var(--mut);font:600 11px Manrope,sans-serif}
+.leg{display:flex;gap:14px;font-size:12px;color:var(--mut);margin-top:8px}.leg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
+@media(max-width:760px){body{flex-direction:column-reverse}nav{width:100%;height:auto;position:fixed;bottom:0;left:0;right:0;flex-direction:row;overflow-x:auto;padding:8px;z-index:5;border-right:0;border-top:1px solid var(--line)}.logo{display:none}nav button{white-space:nowrap;padding:10px}main{padding:18px 14px 90px}}
+body{background:radial-gradient(60% 50% at 80% -10%,rgba(16,217,138,.22),transparent 60%),radial-gradient(50% 40% at 0% 100%,rgba(16,217,138,.10),transparent 60%),#050707;background-attachment:fixed}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.015));backdrop-filter:blur(14px);border-color:rgba(255,255,255,.08);box-shadow:0 20px 50px -30px #000}
+.big{background:linear-gradient(90deg,#fff,#7dffc8);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.big.neg{background:none;color:var(--red)}
+.btn{box-shadow:0 0 28px -6px rgba(16,217,138,.7)}.btn.g,.btn.d{box-shadow:none}
+nav{background:rgba(10,13,14,.7);backdrop-filter:blur(16px)}
+.logo b{text-shadow:0 0 18px var(--em)}
+.hero{border-radius:20px;padding:30px;margin-bottom:18px;border:1px solid rgba(16,217,138,.25);background:radial-gradient(80% 140% at 100% 0,rgba(16,217,138,.22),transparent 60%),var(--panel)}
+.hero h1{font-size:36px;letter-spacing:-.02em}
+svg rect{transform-box:fill-box;transform-origin:bottom;animation:gr .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes gr{from{transform:scaleY(0)}}
+.chat{display:flex;flex-direction:column;gap:10px;min-height:260px}.msg{padding:12px 14px;border-radius:14px;max-width:86%;font-size:14px;line-height:1.55;white-space:pre-wrap}.msg.u{align-self:flex-end;background:var(--em);color:#02150d;font-weight:700}.msg.a{background:var(--panel2);border:1px solid var(--line)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <a class="brand" href="#" data-go="dashboard">
-        <span class="brand-mark">R<span>X</span></span>
-        <span class="brand-copy">RESELLPRO <b>X</b><small>BUSINESS COMMAND CENTER</small></span>
-      </a>
+<nav id="nav"></nav>
+<main id="app"></main>
+<dialog id="dlg"></dialog>
+<script>
+const KEY='resellprox_v1';
+const def={settings:{name:'My Reselling Business',cur:'USD'},products:[],sales:[]};
+let S;try{S=JSON.parse(localStorage.getItem(KEY))||def}catch(e){S=def}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){alert('Storage is full. Remove some product images or export your data.')}};
+const $=s=>document.querySelector(s);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>new Intl.NumberFormat(undefined,{style:'currency',currency:S.settings.cur}).format(n||0);
+const pct=n=>isFinite(n)?(n*100).toFixed(1)+'%':'0%';
+const num=v=>Math.max(0,parseFloat(v)||0);
+const sp=s=>(s.price-s.cost)*s.qty;
+const today=()=>new Date().toISOString().slice(0,10);
+const tabs=[['dash','Dashboard'],['ai','AI assistant'],['calc','Calculator'],['prod','Products'],['sales','Sales'],['ana','Analytics'],['set','Settings']];
+let tab='dash',range='day';
 
-      <div class="side-label">WORKSPACE</div>
-      <nav class="navigation">
-        <button class="nav-item active" data-page="dashboard"><span>◫</span> Dashboard</button>
-        <button class="nav-item" data-page="calculator"><span>⌗</span> Profit calculator</button>
-        <button class="nav-item" data-page="products"><span>▦</span> Products</button>
-        <button class="nav-item" data-page="sales"><span>↗</span> Sales</button>
-        <button class="nav-item" data-page="analytics"><span>▥</span> Analytics</button>
-      </nav>
+function nav(){$('#nav').innerHTML='<div class="logo">ResellPro <b>X</b></div>'+tabs.map(([k,l])=>`<button class="${k==tab?'on':''}" onclick="go('${k}')">${l}</button>`).join('')}
+function go(t){tab=t;render();scrollTo(0,0)}
+function render(){nav();$('#app').innerHTML=({dash,ai,calc,prod,sales,ana,set})[tab]();if(tab=='calc')calcRun();pop()}
 
-      <div class="side-label side-label-bottom">PREFERENCES</div>
-      <nav class="navigation">
-        <button class="nav-item" data-page="settings"><span>⚙</span> Settings</button>
-      </nav>
+/* ---------- charts ---------- */
+function chart(d){
+  if(!d.length)return'';
+  const W=640,H=220,p=28,max=Math.max(1,...d.flatMap(x=>[x.rev,x.pr,0])),min=Math.min(0,...d.map(x=>x.pr));
+  const rng=max-min,y=v=>H-p-((v-min)/rng)*(H-p*2),bw=(W-p*2)/d.length;
+  let o=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Revenue and profit chart"><line x1="${p}" x2="${W-p}" y1="${y(0)}" y2="${y(0)}" stroke="#252c30"/>`;
+  d.forEach((x,i)=>{const cx=p+i*bw,w=Math.min(bw*.36,22);
+    o+=`<rect x="${cx+bw/2-w-1}" y="${Math.min(y(x.rev),y(0))}" width="${w}" height="${Math.abs(y(x.rev)-y(0))}" rx="3" fill="#2a3a34"/>`;
+    o+=`<rect x="${cx+bw/2+1}" y="${Math.min(y(x.pr),y(0))}" width="${w}" height="${Math.abs(y(x.pr)-y(0))}" rx="3" fill="${x.pr<0?'#ff6b6b':'#10d98a'}"/>`;
+    if(d.length<=14||i%Math.ceil(d.length/10)==0)o+=`<text x="${cx+bw/2}" y="${H-8}" text-anchor="middle">${esc(x.l)}</text>`;
+    o+=`<title>${esc(x.l)}: revenue ${money(x.rev)}, profit ${money(x.pr)}</title>`});
+  return o+`</svg><div class="leg"><span><i style="background:#2a3a34"></i>Revenue</span><span><i style="background:#10d98a"></i>Profit</span></div>`
+}
+function series(r){
+  const out=[],now=new Date(),fmt=d=>d.toISOString().slice(0,10);
+  const n=r=='day'?14:r=='week'?8:6;
+  for(let i=n-1;i>=0;i--){
+    let a,b,l;const d=new Date(now);
+    if(r=='day'){d.setDate(d.getDate()-i);a=b=fmt(d);l=a.slice(5)}
+    else if(r=='week'){const e=new Date(now);e.setDate(e.getDate()-i*7);const s=new Date(e);s.setDate(s.getDate()-6);a=fmt(s);b=fmt(e);l=a.slice(5)}
+    else{const m=new Date(now.getFullYear(),now.getMonth()-i,1);a=fmt(new Date(Date.UTC(m.getFullYear(),m.getMonth(),1)));b=fmt(new Date(Date.UTC(m.getFullYear(),m.getMonth()+1,0)));l=a.slice(0,7)}
+    const ss=S.sales.filter(s=>s.date>=a&&s.date<=b);
+    out.push({l,rev:ss.reduce((t,s)=>t+s.price*s.qty,0),pr:ss.reduce((t,s)=>t+sp(s),0)})
+  }return out
+}
+const tot=()=>({rev:S.sales.reduce((t,s)=>t+s.price*s.qty,0),pr:S.sales.reduce((t,s)=>t+sp(s),0),units:S.sales.reduce((t,s)=>t+s.qty,0)});
 
-      <div class="sidebar-bottom">
-        <div class="status-dot"></div>
-        <div><b>System operational</b><small>Your workspace is ready</small></div>
-      </div>
-    </aside>
+/* ---------- dashboard ---------- */
+function dash(){
+  const t=tot(),low=S.products.filter(p=>p.stock<=p.low);
+  return`<div class="hero"><p class="sub" style="margin-bottom:6px">Business command center</p><h1>${esc(S.settings.name)}</h1><p class="sub" style="margin:8px 0 18px;max-width:520px">Track every sale, every unit, and every dollar of profit. Ask the AI assistant what to do next.</p><div class="row" style="margin:0"><button class="btn" onclick="saleForm()">Record sale</button><button class="btn g" onclick="go('ai')">Ask the AI</button><button class="btn g" onclick="demo()">Load demo store</button></div></div>
+  <div class="grid">
+   <div class="card"><h3>Total revenue</h3><div class="big" data-m="1" data-n="${t.rev}">${money(t.rev)}</div></div>
+   <div class="card"><h3>Net profit</h3><div class="big ${t.pr<0?'neg':'pos'}" data-m="1" data-n="${t.pr}">${money(t.pr)}</div></div>
+   <div class="card"><h3>Products</h3><div class="big" data-n="${S.products.length}">${S.products.length}</div></div>
+   <div class="card"><h3>Sales</h3><div class="big" data-n="${S.sales.length}">${S.sales.length}</div></div></div>
+  <div class="row"><button class="btn" onclick="saleForm()">Record sale</button><button class="btn g" onclick="prodForm()">Add product</button><button class="btn g" onclick="go('calc')">Open calculator</button></div>
+  ${low.length?`<div class="card" style="margin-bottom:14px;border-color:var(--amb)"><h3>Low stock</h3>${low.map(p=>`<span class="tag" style="margin-right:6px">${esc(p.name)}: ${p.stock} left</span>`).join('')}</div>`:''}
+  <div class="card" style="margin-bottom:14px"><h3>Last 14 days</h3>${S.sales.length?chart(series('day')):'<div class="empty">No sales yet. Record your first sale to see performance here.</div>'}</div>
+  <div class="card"><h3>Recent transactions</h3>${salesTable(S.sales.slice(-5).reverse(),false)}</div>`
+}
 
-    <main class="main-content">
-      <header class="topbar">
-        <div class="topbar-left">
-          <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
-          <div>
-            <div class="eyebrow">YOUR BUSINESS AT A GLANCE</div>
-            <h1 class="top-title">Dashboard</h1>
-          </div>
-        </div>
-        <div class="topbar-right">
-          <span class="live-indicator">● LIVE WORKSPACE</span>
-          <div class="avatar">RX</div>
-        </div>
-      </header>
+/* ---------- calculator ---------- */
+function calc(){
+  const f=(id,l,v)=>`<div><label for="${id}">${l}</label><input id="${id}" type="number" min="0" step="any" value="${v}" oninput="calcRun()"></div>`;
+  return`<h1>Profit calculator</h1><p class="sub">Per-unit costs are multiplied by quantity. Advertising is a one-time cost for the batch.</p>
+  <div class="card" style="margin-bottom:14px"><div class="form">${f('c_buy','Buying price (per unit)',5)}${f('c_sell','Selling price (per unit)',15)}${f('c_ship','Shipping (per unit)',1)}${f('c_pack','Packaging (per unit)',0.5)}${f('c_other','Other expenses (per unit)',0)}${f('c_ads','Advertising (total)',20)}${f('c_qty','Quantity',50)}</div></div>
+  <div class="grid" id="c_out"></div><div class="card"><h3>Potential earnings by quantity</h3><div class="wrap"><table id="c_tbl"></table></div></div>`
+}
+function calcCore(q){
+  const g=id=>num($('#'+id).value),unit=g('c_buy')+g('c_ship')+g('c_pack')+g('c_other');
+  const cost=unit*q+g('c_ads'),rev=g('c_sell')*q,pr=rev-cost;
+  return{cost,rev,pr,margin:rev?pr/rev:0,roi:cost?pr/cost:0,be:q?cost/q:0}
+}
+function calcRun(){
+  const r=calcCore(num($('#c_qty').value)),c=(l,v,cls='')=>`<div class="card"><h3>${l}</h3><div class="big ${cls}">${v}</div></div>`;
+  $('#c_out').innerHTML=c('Total cost',money(r.cost))+c('Expected revenue',money(r.rev))+c('Net profit',money(r.pr),r.pr<0?'neg':'pos')+c('Profit margin',pct(r.margin))+c('ROI',pct(r.roi))+c('Break-even price',money(r.be));
+  $('#c_tbl').innerHTML='<tr><th>Units</th><th>Cost</th><th>Revenue</th><th>Profit</th><th>Margin</th></tr>'+[10,50,100,500].map(q=>{const x=calcCore(q);return`<tr><td>${q}</td><td>${money(x.cost)}</td><td>${money(x.rev)}</td><td class="${x.pr<0?'neg':'pos'}">${money(x.pr)}</td><td>${pct(x.margin)}</td></tr>`}).join('')
+}
 
-      <div class="content-area">
-        <section class="page active" id="page-dashboard">
-          <div class="welcome-row">
-            <div><div class="eyebrow">OVERVIEW</div><h2>Welcome back.</h2><p class="muted">Here's what's happening with your business.</p></div>
-            <button class="primary-btn" data-go="calculator">＋ Quick calculation</button>
-          </div>
+/* ---------- products ---------- */
+function prod(){
+  const stats={};S.sales.forEach(s=>{stats[s.pid]=(stats[s.pid]||0)+sp(s)});
+  const best=Object.entries(stats).sort((a,b)=>b[1]-a[1])[0];
+  return`<h1>Products</h1><p class="sub">Manage your catalog and stock</p><div class="row"><button class="btn" onclick="prodForm()">Add product</button></div>
+  <div class="card wrap">${S.products.length?`<table><tr><th></th><th>Name</th><th>Category</th><th>Buy</th><th>Sell</th><th>Stock</th><th></th></tr>${S.products.map(p=>`<tr>
+   <td>${p.img?`<img class="pimg" src="${p.img}" alt="">`:'<div class="pimg">&#9633;</div>'}</td>
+   <td><b>${esc(p.name)}</b>${best&&best[0]==p.id&&best[1]>0?' <span class="tag ok">Top earner</span>':''}</td><td>${esc(p.cat)||'-'}</td><td>${money(p.buy)}</td><td>${money(p.sell)}</td>
+   <td>${p.stock}${p.stock<=p.low?' <span class="tag '+(p.stock==0?'bad':'')+'">'+(p.stock==0?'Out':'Low')+'</span>':''}</td>
+   <td style="white-space:nowrap"><button class="btn g sm" onclick="prodForm('${p.id}')">Edit</button> <button class="btn d sm" onclick="delProd('${p.id}')">Delete</button></td></tr>`).join('')}</table>`:'<div class="empty">No products yet. Add your first product to start tracking stock and profit.</div>'}</div>`
+}
+let tmpImg='';
+function prodForm(id){
+  const p=S.products.find(x=>x.id==id)||{name:'',cat:'',buy:'',sell:'',stock:'',low:5,img:''};tmpImg=p.img;
+  const f=(i,l,v,t='number')=>`<div><label for="${i}">${l}</label><input id="${i}" type="${t}" ${t=='number'?'min="0" step="any"':''} value="${esc(v)}"></div>`;
+  dlg(`<h1 style="font-size:20px;margin-bottom:14px">${id?'Edit product':'Add product'}</h1><div class="form">${f('p_name','Name',p.name,'text')}${f('p_cat','Category',p.cat,'text')}${f('p_buy','Buying price',p.buy)}${f('p_sell','Selling price',p.sell)}${f('p_stock','Stock',p.stock)}${f('p_low','Low-stock alert at',p.low)}</div>
+  <div style="margin-top:12px"><label for="p_img">Picture</label><input id="p_img" type="file" accept="image/*" onchange="pickImg(this)"></div>
+  <div class="row" style="margin:16px 0 0"><button class="btn" onclick="saveProd('${id||''}')">Save product</button><button class="btn g" onclick="$('#dlg').close()">Cancel</button></div>`)
+}
+function pickImg(el){
+  const f=el.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),k=Math.min(1,160/Math.max(im.width,im.height));c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);tmpImg=c.toDataURL('image/jpeg',.75)};im.src=r.result};r.readAsDataURL(f)
+}
+function saveProd(id){
+  const name=$('#p_name').value.trim();if(!name){$('#p_name').focus();return}
+  const d={name,cat:$('#p_cat').value.trim(),buy:num($('#p_buy').value),sell:num($('#p_sell').value),stock:Math.floor(num($('#p_stock').value)),low:Math.floor(num($('#p_low').value)),img:tmpImg};
+  if(id)Object.assign(S.products.find(x=>x.id==id),d);else S.products.push({id:uid(),...d});
+  save();$('#dlg').close();render()
+}
+function delProd(id){
+  if(!confirm('Delete this product? Past sales stay in your history.'))return;
+  S.products=S.products.filter(p=>p.id!=id);save();render()
+}
 
-          <div class="stats-grid">
-            <article class="stat-card"><div class="stat-top"><span>Total revenue</span><span class="stat-icon">↗</span></div><strong id="totalRevenue">0</strong><small class="muted">Revenue from recorded sales</small></article>
-            <article class="stat-card"><div class="stat-top"><span>Net profit</span><span class="stat-icon">◆</span></div><strong id="totalProfit">0</strong><small class="muted">After recorded product costs</small></article>
-            <article class="stat-card"><div class="stat-top"><span>Products</span><span class="stat-icon">▦</span></div><strong id="totalProducts">0</strong><small class="muted">Products in your inventory</small></article>
-            <article class="stat-card"><div class="stat-top"><span>Sales recorded</span><span class="stat-icon">⇧</span></div><strong id="totalSales">0</strong><small class="muted">Total transactions</small></article>
-          </div>
+/* ---------- sales ---------- */
+function salesTable(list,actions=true){
+  if(!list.length)return'<div class="empty">No sales recorded yet.</div>';
+  return`<div class="wrap"><table><tr><th>Date</th><th>Product</th><th>Qty</th><th>Revenue</th><th>Profit</th>${actions?'<th></th>':''}</tr>${list.map(s=>`<tr><td>${s.date}</td><td>${esc(s.name)}</td><td>${s.qty}</td><td>${money(s.price*s.qty)}</td><td class="${sp(s)<0?'neg':'pos'}">${money(sp(s))}</td>${actions?`<td><button class="btn d sm" onclick="delSale('${s.id}')">Delete</button></td>`:''}</tr>`).join('')}</table></div>`
+}
+function sales(){return`<h1>Sales</h1><p class="sub">Every sale updates your stock automatically</p><div class="row"><button class="btn" onclick="saleForm()">Record sale</button></div><div class="card">${salesTable(S.sales.slice().reverse())}</div>`}
+function saleForm(){
+  if(!S.products.length){alert('Add a product first, then record a sale.');go('prod');return}
+  dlg(`<h1 style="font-size:20px;margin-bottom:14px">Record sale</h1><div class="form">
+  <div><label for="s_p">Product</label><select id="s_p" onchange="saleFill()">${S.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${p.stock} in stock)</option>`).join('')}</select></div>
+  <div><label for="s_q">Quantity</label><input id="s_q" type="number" min="1" step="1" value="1"></div>
+  <div><label for="s_pr">Selling price (per unit)</label><input id="s_pr" type="number" min="0" step="any"></div>
+  <div><label for="s_d">Date</label><input id="s_d" type="date" value="${today()}"></div></div>
+  <div class="row" style="margin:16px 0 0"><button class="btn" onclick="saveSale()">Save sale</button><button class="btn g" onclick="$('#dlg').close()">Cancel</button></div>`);saleFill()
+}
+function saleFill(){const p=S.products.find(x=>x.id==$('#s_p').value);if(p)$('#s_pr').value=p.sell}
+function saveSale(){
+  const p=S.products.find(x=>x.id==$('#s_p').value),q=Math.floor(num($('#s_q').value));
+  if(!p||q<1){$('#s_q').focus();return}
+  if(q>p.stock&&!confirm(`Only ${p.stock} in stock. Record the sale anyway? Stock will go to 0.`))return;
+  S.sales.push({id:uid(),pid:p.id,name:p.name,qty:q,price:num($('#s_pr').value),cost:p.buy,date:$('#s_d').value||today()});
+  p.stock=Math.max(0,p.stock-q);save();$('#dlg').close();render()
+}
+function delSale(id){
+  const s=S.sales.find(x=>x.id==id);if(!s||!confirm('Delete this sale? The items return to stock.'))return;
+  const p=S.products.find(x=>x.id==s.pid);if(p)p.stock+=s.qty;
+  S.sales=S.sales.filter(x=>x.id!=id);save();render()
+}
 
-          <div class="dashboard-grid">
-            <article class="panel chart-panel">
-              <div class="panel-heading"><div><h3>Revenue overview</h3><p class="muted">Your latest recorded sales</p></div><span class="panel-tag">LAST 7 DAYS</span></div>
-              <div class="chart" id="revenueChart"><div class="empty-chart">Record sales to see your revenue chart.</div></div>
-            </article>
-            <article class="panel">
-              <div class="panel-heading"><div><h3>Quick actions</h3><p class="muted">Get things done faster</p></div></div>
-              <div class="quick-actions">
-                <button class="quick-action" data-go="products"><span>＋</span><div><b>Add a product</b><small>Build your inventory</small></div><i>→</i></button>
-                <button class="quick-action" data-go="sales"><span>↗</span><div><b>Record a sale</b><small>Track a new transaction</small></div><i>→</i></button>
-                <button class="quick-action" data-go="calculator"><span>⌗</span><div><b>Calculate profit</b><small>Check your margins</small></div><i>→</i></button>
-              </div>
-            </article>
-          </div>
+/* ---------- analytics ---------- */
+function ana(){
+  const t=tot(),by={};
+  S.sales.forEach(s=>{const b=by[s.pid+s.name]=by[s.pid+s.name]||{n:s.name,u:0,pr:0};b.u+=s.qty;b.pr+=sp(s)});
+  const L=Object.values(by),top=k=>L.slice().sort((a,b)=>b[k]-a[k]).slice(0,5);
+  const list=(a,k)=>a.length?`<table>${a.map(x=>`<tr><td>${esc(x.n)}</td><td style="text-align:right"><b>${k=='u'?x.u+' units':money(x.pr)}</b></td></tr>`).join('')}</table>`:'<div class="empty">Not enough data yet.</div>';
+  const first=S.sales.length?S.sales.map(s=>s.date).sort()[0]:null;
+  const sr=series(range),cur=sr[sr.length-1],prev=sr[sr.length-2],growth=prev&&prev.rev?(cur.rev-prev.rev)/prev.rev:0;
+  return`<h1>Analytics</h1><p class="sub">${first?'Tracking since '+first:'Record sales to unlock insights'}</p>
+  <div class="grid"><div class="card"><h3>Units sold</h3><div class="big">${t.units}</div></div>
+  <div class="card"><h3>Average order value</h3><div class="big">${money(S.sales.length?t.rev/S.sales.length:0)}</div></div>
+  <div class="card"><h3>Overall margin</h3><div class="big">${pct(t.rev?t.pr/t.rev:0)}</div></div>
+  <div class="card"><h3>Revenue growth</h3><div class="big ${growth<0?'neg':'pos'}">${pct(growth)}</div></div></div>
+  <div class="card" style="margin-bottom:14px"><div class="row"><h3 style="margin:0;flex:1">Revenue and profit</h3><div class="seg">${[['day','Daily'],['week','Weekly'],['month','Monthly']].map(([k,l])=>`<button class="${range==k?'on':''}" onclick="range='${k}';render()">${l}</button>`).join('')}</div></div>${chart(sr)}</div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))"><div class="card"><h3>Best-selling products</h3>${list(top('u'),'u')}</div><div class="card"><h3>Most profitable products</h3>${list(top('pr'),'pr')}</div></div>`
+}
 
-          <article class="panel">
-            <div class="panel-heading"><div><h3>Recent sales</h3><p class="muted">Your latest transactions</p></div><button class="text-btn" data-go="sales">View all →</button></div>
-            <div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>DATE</th><th>REVENUE</th><th>PROFIT</th></tr></thead><tbody id="recentSales"><tr><td colspan="4" class="empty-cell">No sales yet. Record your first sale.</td></tr></tbody></table></div>
-          </article>
-        </section>
+/* ---------- settings ---------- */
+function set(){
+  return`<h1>Settings</h1><p class="sub">Personalize your workspace</p><div class="card" style="max-width:520px"><div class="form" style="grid-template-columns:1fr">
+  <div><label for="st_n">Business name</label><input id="st_n" value="${esc(S.settings.name)}" onchange="S.settings.name=this.value.trim()||'My Reselling Business';save()"></div>
+  <div><label for="st_c">Currency</label><select id="st_c" onchange="S.settings.cur=this.value;save();render()">${['MAD','USD','EUR','GBP','CAD','AED'].map(c=>`<option ${c==S.settings.cur?'selected':''}>${c}</option>`).join('')}</select></div></div>
+  <div class="row" style="margin:18px 0 0"><button class="btn" onclick="exportData()">Export data</button><button class="btn g" onclick="exportCSV()">Export sales (CSV)</button><button class="btn d" onclick="resetAll()">Erase all data</button></div></div>
+  <p class="sub" style="margin-top:14px">Data is saved in this browser. Cloud sync across devices comes with accounts in the next stage.</p>`
+}
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click()}
+function exportData(){dl('resellpro-backup.json',JSON.stringify(S,null,2),'application/json')}
+function exportCSV(){
+  const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  dl('sales.csv',['Date,Product,Qty,Price,Cost,Revenue,Profit',...S.sales.map(s=>[s.date,q(s.name),s.qty,s.price,s.cost,s.price*s.qty,sp(s)].join(','))].join('\n'),'text/csv')
+}
+function resetAll(){if(confirm('Erase every product and sale? This cannot be undone.')){S=JSON.parse(JSON.stringify(def));save();render()}}
 
-        <section class="page" id="page-calculator">
-          <div class="page-intro"><div class="eyebrow">KNOW YOUR NUMBERS</div><h2>Profit calculator</h2><p class="muted">Calculate costs, profit, margin, and return on investment before you sell.</p></div>
-          <div class="calculator-layout">
-            <article class="panel calculator-form">
-              <div class="panel-heading"><div><h3>Product details</h3><p class="muted">Enter your costs and selling price.</p></div></div>
-              <label>Product name<input id="calcName" type="text" placeholder="e.g. Wireless earbuds"></label>
-              <div class="form-grid">
-                <label>Buying price<input id="buyPrice" type="number" min="0" step="0.01" placeholder="0.00"></label>
-                <label>Selling price<input id="sellPrice" type="number" min="0" step="0.01" placeholder="0.00"></label>
-                <label>Shipping cost<input id="shippingCost" type="number" min="0" step="0.01" placeholder="0.00"></label>
-                <label>Other costs<input id="otherCost" type="number" min="0" step="0.01" placeholder="0.00"></label>
-              </div>
-              <button class="primary-btn full-btn" id="calculateBtn">Calculate profit <span>→</span></button>
-              <p class="form-message" id="calcMessage">Enter your numbers to calculate your profit.</p>
-            </article>
-            <article class="panel results-panel">
-              <div class="eyebrow">YOUR RESULTS</div><h3>Profit breakdown</h3>
-              <div class="main-result"><small>NET PROFIT PER ITEM</small><strong id="calcProfit">—</strong><span id="calcMessageResult">Waiting for calculation</span></div>
-              <div class="result-line"><span>Total cost</span><b id="calcCost">—</b></div>
-              <div class="result-line"><span>Revenue</span><b id="calcRevenue">—</b></div>
-              <div class="result-line"><span>Profit margin</span><b id="calcMargin">—</b></div>
-              <div class="result-line"><span>ROI</span><b id="calcROI">—</b></div>
-              <div class="result-note">Calculations are estimates based on the costs you enter. Remember to include every expense.</div>
-            </article>
-          </div>
-        </section>
 
-        <section class="page" id="page-products">
-          <div class="page-intro intro-with-action"><div><div class="eyebrow">YOUR INVENTORY</div><h2>Products</h2><p class="muted">Keep track of what you buy, sell, and have in stock.</p></div><button class="primary-btn" id="addProductBtn">＋ Add product</button></div>
-          <article class="panel"><div class="panel-heading"><div><h3>Product inventory</h3><p class="muted"><span id="productCount">0</span> products listed</p></div></div>
-            <div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>BUY PRICE</th><th>SELL PRICE</th><th>STOCK</th><th>ACTIONS</th></tr></thead><tbody id="productList"><tr><td colspan="5" class="empty-cell">No products yet. Add your first product.</td></tr></tbody></table></div>
-          </article>
-        </section>
-
-        <section class="page" id="page-sales">
-          <div class="page-intro intro-with-action"><div><div class="eyebrow">TRANSACTION TRACKER</div><h2>Sales</h2><p class="muted">Record transactions and follow your business performance.</p></div><button class="primary-btn" id="addSaleBtn">＋ Record sale</button></div>
-          <div class="stats-grid compact-stats">
-            <article class="stat-card"><div class="stat-top"><span>Revenue</span><span class="stat-icon">↗</span></div><strong id="salesRevenue">0</strong></article>
-            <article class="stat-card"><div class="stat-top"><span>Profit</span><span class="stat-icon">◆</span></div><strong id="salesProfit">0</strong></article>
-          </div>
-          <article class="panel"><div class="panel-heading"><div><h3>All transactions</h3><p class="muted">Your recorded sales history</p></div></div>
-            <div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>DATE</th><th>QUANTITY</th><th>REVENUE</th><th>PROFIT</th><th>ACTIONS</th></tr></thead><tbody id="salesList"><tr><td colspan="6" class="empty-cell">No sales recorded yet.</td></tr></tbody></table></div>
-          </article>
-        </section>
-
-        <section class="page" id="page-analytics">
-          <div class="page-intro"><div class="eyebrow">BUSINESS INTELLIGENCE</div><h2>Analytics</h2><p class="muted">Understand your sales, revenue, and profitability.</p></div>
-          <div class="stats-grid">
-            <article class="stat-card"><div class="stat-top"><span>Total revenue</span><span class="stat-icon">↗</span></div><strong id="analyticsRevenue">0</strong></article>
-            <article class="stat-card"><div class="stat-top"><span>Total profit</span><span class="stat-icon">◆</span></div><strong id="analyticsProfit">0</strong></article>
-            <article class="stat-card"><div class="stat-top"><span>Average sale</span><span class="stat-icon">◈</span></div><strong id="averageSale">0</strong></article>
-            <article class="stat-card"><div class="stat-top"><span>Units sold</span><span class="stat-icon">▦</span></div><strong id="unitsSold">0</strong></article>
-          </div>
-          <article class="panel chart-panel"><div class="panel-heading"><div><h3>Revenue by day</h3><p class="muted">Based on your recorded sales</p></div></div><div class="chart analytics-chart" id="analyticsChart"><div class="empty-chart">Your analytics will appear here when you record sales.</div></div></article>
-        </section>
-
-        <section class="page" id="page-settings">
-          <div class="page-intro"><div class="eyebrow">WORKSPACE CONTROL</div><h2>Settings</h2><p class="muted">Manage your preferences and business data.</p></div>
-          <article class="panel settings-panel"><div><h3>Currency</h3><p class="muted">Choose the currency used throughout your dashboard.</p></div><select id="currencySelect"><option value="MAD">MAD — Moroccan dirham</option><option value="USD">USD — US dollar</option><option value="EUR">EUR — Euro</option><option value="GBP">GBP — British pound</option><option value="CAD">CAD — Canadian dollar</option><option value="AED">AED — UAE dirham</option></select></article>
-          <article class="panel danger-panel"><div><h3>Clear workspace data</h3><p class="muted">Permanently remove all products and sales saved in this browser.</p></div><button class="danger-btn" id="clearDataBtn">Clear all data</button></article>
-          <div class="settings-foot">RESELLPRO X <span>•</span> Your business, under control.</div>
-        </section>
-      </div>
-    </main>
-  </div>
-
-  <div class="modal-backdrop" id="modal">
-    <div class="modal">
-      <div class="modal-header"><div><div class="eyebrow">WORKSPACE</div><h3 id="modalTitle">Add item</h3></div><button class="modal-close" id="closeModal" aria-label="Close">×</button></div>
-      <div id="modalBody"></div>
-    </div>
-  </div>
-  <div class="toast" id="toast"></div>
-  <script src="app.js"></script>
+function pop(){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;document.querySelectorAll('[data-n]').forEach(e=>{const n=+e.dataset.n,m=e.dataset.m,t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/900),v=n*(1-Math.pow(1-k,3));e.textContent=m?money(v):Math.round(v);if(k<1)requestAnimationFrame(f)})(t0)})}
+function demo(){if((S.products.length||S.sales.length)&&!confirm('Replace your current data with a demo store?'))return;
+ const P=[['Wireless Earbuds Pro','Audio',6.5,24.9,'#10d98a',60],['Smart Watch X9','Wearables',14,49,'#5ab0ff',40],['LED Strip Lights','Home',3.2,14.5,'#c78bff',80],['Phone Case Bundle','Accessories',1.1,9.9,'#f5b942',120],['Mini Projector','Electronics',38,89,'#ff8a5b',25],['Car Phone Mount','Auto',2.4,12.9,'#4de0e0',9],['Ring Light 10in','Studio',11,10.5,'#ff6b6b',30]];
+ let r=7;const rnd=()=>(r=(r*16807)%2147483647)/2147483647;
+ S.products=P.map(([name,cat,buy,sell,c,stock])=>({id:uid(),name,cat,buy,sell,stock,low:10,img:'data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='${c}33'/><text x='20' y='27' font-size='20' text-anchor='middle' fill='${c}' font-family='sans-serif' font-weight='800'>${name[0]}</text></svg>`)}));
+ S.sales=[];for(let d=44;d>=0;d--){const dt=new Date();dt.setDate(dt.getDate()-d);const n=1+Math.floor(rnd()*3+(45-d)/20);for(let i=0;i<n;i++){const p=S.products[Math.floor(rnd()*rnd()*S.products.length)],q=1+Math.floor(rnd()*3);if(p.stock<q)continue;p.stock-=q;S.sales.push({id:uid(),pid:p.id,name:p.name,qty:q,price:p.sell,cost:p.buy,date:dt.toISOString().slice(0,10)})}}
+ save();go('dash')}
+let chat=[{a:1,t:'Hi! I analyze your real sales and stock data. Ask me anything about your business.'}];
+function ai(){return`<h1>AI assistant</h1><p class="sub">Answers based on your own products and sales</p><div class="card"><div class="chat" id="chat">${chat.map(m=>`<div class="msg ${m.a?'a':'u'}">${esc(m.t)}</div>`).join('')}</div><div class="row" style="margin:14px 0 8px">${['Which product makes the most profit?','Which products are losing money?','What should I reorder?','How much should I sell for?','How can I improve?'].map(q=>`<button class="btn g sm" onclick="ask(this.textContent)">${q}</button>`).join('')}</div><div class="row" style="margin:0"><input id="aq" placeholder="Ask about your business" style="flex:1" onkeydown="if(event.key=='Enter')ask(this.value)"><button class="btn" onclick="ask($('#aq').value)">Ask</button></div></div>`}
+function ask(q){q=q.trim();if(!q)return;chat.push({t:q},{a:1,t:''});render();const full=answer(q),m=chat[chat.length-1],el=$('#chat').lastElementChild;let i=0;const id=setInterval(()=>{i+=2;m.t=full.slice(0,i);el.textContent=m.t;if(i>=full.length){m.t=full;clearInterval(id)}},14)}
+function stats(){const d0=S.sales.map(s=>s.date).sort()[0]||today(),days=Math.max(1,(Date.now()-new Date(d0))/864e5);return S.products.map(p=>{const ss=S.sales.filter(s=>s.pid==p.id),u=ss.reduce((t,s)=>t+s.qty,0),rev=ss.reduce((t,s)=>t+s.price*s.qty,0),pr=ss.reduce((t,s)=>t+sp(s),0);return{p,u,rev,pr,m:rev?pr/rev:(p.sell?(p.sell-p.buy)/p.sell:0),v:u/days}})}
+function answer(q){q=q.toLowerCase();const L=stats();if(!L.length)return'Add some products and sales first, then I can analyze them.';
+ const f=pct,by=k=>L.slice().sort((a,b)=>b[k]-a[k]);
+ if(/los|unprofit/.test(q)){const x=L.filter(a=>a.m<.1);return x.length?'Products losing money or under a 10% margin:\n'+x.map(a=>`• ${a.p.name}: ${f(a.m)} margin (${money(a.pr)} profit)`).join('\n')+'\nRaise the price or cut costs on these.':'Nothing is losing money right now. Every product is above a 10% margin.'}
+ if(/price|sell for|charge/.test(q))return'Suggested prices for a 35% margin:\n'+L.map(a=>`• ${a.p.name}: ${money(a.p.buy/.65)} (now ${money(a.p.sell)})`).join('\n')+'\nThese use the buying price only. Add shipping and packaging for a safer number.';
+ if(/stock|reorder|restock/.test(q)){const x=L.filter(a=>a.v>0).map(a=>({...a,left:a.p.stock/a.v})).sort((a,b)=>a.left-b.left).slice(0,4);return x.length?'Restock priority at your current pace:\n'+x.map(a=>`• ${a.p.name}: ${a.p.stock} left, about ${Math.round(a.left)} days. Order about ${Math.ceil(a.v*30)} for the next 30 days.`).join('\n'):'Not enough sales to forecast demand yet.'}
+ const b=by('pr')[0],w=by('m')[L.length-1];
+ if(/improve|grow|better|advice|tip/.test(q))return`Three moves:\n1. Push ${b.p.name}. It earns the most (${money(b.pr)}).\n2. Fix ${w.p.name}. It has your thinnest margin at ${f(w.m)}.\n3. Keep a restock list so best sellers never hit zero.`;
+ return`${b.p.name} earns the most: ${money(b.pr)} profit from ${b.u} units at a ${f(b.m)} margin.\nTry asking about losses, pricing, restocking, or how to improve.`}
+function dlg(h){const d=$('#dlg');d.innerHTML=h;d.showModal()}
+render();
+</script>
 </body>
 </html>
-
 
