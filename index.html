@@ -3,277 +3,164 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080b10">
-  <title>ResellPro X — Business OS</title>
-  <meta name="description" content="Manage products, sales, costs and business performance with ResellPro X.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d0b">
+  <title>ResellPro X — Business Command Center</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="app">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-go="dashboard">
+        <span class="brand-mark">R<span>X</span></span>
+        <span class="brand-copy">RESELLPRO <b>X</b><small>BUSINESS COMMAND CENTER</small></span>
+      </a>
 
-  <aside class="sidebar" id="sidebar">
-    <a class="brand" href="#" data-page="dashboard">
-      <span class="brand-icon">R</span>
-      <span class="brand-name">Resell<span>Pro</span><small>X / BUSINESS OS</small></span>
-    </a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="navigation">
+        <button class="nav-item active" data-page="dashboard"><span>◫</span> Dashboard</button>
+        <button class="nav-item" data-page="calculator"><span>⌗</span> Profit calculator</button>
+        <button class="nav-item" data-page="products"><span>▦</span> Products</button>
+        <button class="nav-item" data-page="sales"><span>↗</span> Sales</button>
+        <button class="nav-item" data-page="analytics"><span>▥</span> Analytics</button>
+      </nav>
 
-    <div class="nav-label">MAIN MENU</div>
-    <nav class="nav">
-      <button class="nav-link active" data-page="dashboard"><span>▦</span> Overview</button>
-      <button class="nav-link" data-page="calculator"><span>⌗</span> Profit calculator</button>
-      <button class="nav-link" data-page="products"><span>◈</span> Products <i id="navProductCount">0</i></button>
-      <button class="nav-link" data-page="sales"><span>↗</span> Sales</button>
-      <button class="nav-link" data-page="analytics"><span>▥</span> Analytics</button>
-    </nav>
+      <div class="side-label side-label-bottom">PREFERENCES</div>
+      <nav class="navigation">
+        <button class="nav-item" data-page="settings"><span>⚙</span> Settings</button>
+      </nav>
 
-    <div class="nav-label second-label">WORKSPACE</div>
-    <nav class="nav">
-      <button class="nav-link" data-page="settings"><span>⚙</span> Settings</button>
-    </nav>
-
-    <div class="sidebar-bottom">
-      <div class="sidebar-promo">
-        <div class="promo-symbol">✳</div>
-        <strong>Built to grow.</strong>
-        <p>Your business, organized in one place.</p>
-        <span>RESELLPRO X 3.0</span>
+      <div class="sidebar-bottom">
+        <div class="status-dot"></div>
+        <div><b>System operational</b><small>Your workspace is ready</small></div>
       </div>
-      <div class="user-profile">
-        <div class="user-avatar">R</div>
-        <div><strong>Business Owner</strong><small>Personal workspace</small></div>
-        <span class="online-dot"></span>
-      </div>
-    </div>
-  </aside>
+    </aside>
 
-  <main class="main">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
-        <div>
-          <div class="top-eyebrow">BUSINESS WORKSPACE</div>
-          <div class="top-heading" id="topHeading">Overview</div>
-        </div>
-      </div>
-      <div class="topbar-right">
-        <div class="system-status"><span></span> Workspace active</div>
-        <div class="top-user">R</div>
-      </div>
-    </header>
-
-    <div class="content">
-
-      <!-- DASHBOARD -->
-      <section class="page active" id="page-dashboard">
-        <div class="welcome">
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
           <div>
-            <div class="eyebrow">YOUR BUSINESS, AT A GLANCE</div>
-            <h1>Good business<br>starts with <span>clarity.</span></h1>
-            <p>Track your numbers. Understand your growth. Make smarter moves.</p>
+            <div class="eyebrow">YOUR BUSINESS AT A GLANCE</div>
+            <h1 class="top-title">Dashboard</h1>
           </div>
-          <button class="button button-primary" data-go="calculator">＋ Calculate profit</button>
         </div>
-
-        <div class="stats">
-          <article class="stat">
-            <div class="stat-label">TOTAL REVENUE <span class="stat-icon">↗</span></div>
-            <div class="stat-value" id="dashRevenue">0.00 MAD</div>
-            <div class="stat-foot">From recorded sales</div>
-          </article>
-          <article class="stat">
-            <div class="stat-label">NET PROFIT <span class="stat-icon green-icon">✳</span></div>
-            <div class="stat-value green-text" id="dashProfit">0.00 MAD</div>
-            <div class="stat-foot">After product costs</div>
-          </article>
-          <article class="stat">
-            <div class="stat-label">INVENTORY <span class="stat-icon">◈</span></div>
-            <div class="stat-value" id="dashProducts">0</div>
-            <div class="stat-foot">Different products</div>
-          </article>
-          <article class="stat">
-            <div class="stat-label">TRANSACTIONS <span class="stat-icon">⇧</span></div>
-            <div class="stat-value" id="dashSales">0</div>
-            <div class="stat-foot">Sales recorded</div>
-          </article>
+        <div class="topbar-right">
+          <span class="live-indicator">● LIVE WORKSPACE</span>
+          <div class="avatar">RX</div>
         </div>
+      </header>
 
-        <div class="dashboard-grid">
-          <article class="card performance-card">
-            <div class="card-heading">
-              <div><div class="eyebrow">YOUR PERFORMANCE</div><h2>Revenue activity</h2></div>
-              <span class="tag">LAST 7 DAYS</span>
-            </div>
-            <div id="dashboardChart" class="chart"></div>
-            <div class="chart-legend"><span><i></i> Revenue</span></div>
-          </article>
-
-          <article class="card actions-card">
-            <div class="card-heading">
-              <div><div class="eyebrow">GET THINGS DONE</div><h2>Quick actions</h2></div>
-            </div>
-            <button class="action-row" data-go="products"><span class="action-icon">＋</span><span><strong>Add a product</strong><small>Build your inventory</small></span><b>→</b></button>
-            <button class="action-row" data-go="sales"><span class="action-icon">↗</span><span><strong>Record a sale</strong><small>Track a transaction</small></span><b>→</b></button>
-            <button class="action-row" data-go="calculator"><span class="action-icon">⌗</span><span><strong>Calculate profit</strong><small>Check your margins</small></span><b>→</b></button>
-          </article>
-        </div>
-
-        <article class="card">
-          <div class="card-heading">
-            <div><div class="eyebrow">LATEST TRANSACTIONS</div><h2>Recent sales</h2></div>
-            <button class="button button-quiet" data-go="sales">View all →</button>
+      <div class="content-area">
+        <section class="page active" id="page-dashboard">
+          <div class="welcome-row">
+            <div><div class="eyebrow">OVERVIEW</div><h2>Welcome back.</h2><p class="muted">Here's what's happening with your business.</p></div>
+            <button class="primary-btn" data-go="calculator">＋ Quick calculation</button>
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>PRODUCT</th><th>DATE</th><th>QUANTITY</th><th>REVENUE</th><th>PROFIT</th></tr></thead>
-              <tbody id="recentSales"><tr><td colspan="5" class="empty">No sales yet. Your activity will appear here.</td></tr></tbody>
-            </table>
-          </div>
-        </article>
-      </section>
 
-      <!-- CALCULATOR -->
-      <section class="page" id="page-calculator">
-        <div class="page-intro">
-          <div class="eyebrow">SMART PRICING TOOL</div>
-          <h1>Profit <span>calculator.</span></h1>
-          <p>Know exactly what you make before you sell.</p>
-        </div>
-        <div class="calculator-grid">
-          <article class="card calculator-card">
-            <div class="eyebrow">01 / YOUR COSTS</div>
-            <h2>Product details</h2>
-            <label>Product name <input id="calcName" placeholder="e.g. Wireless headphones"></label>
-            <div class="form-grid">
-              <label>Buying price <input type="number" id="calcBuy" min="0" step="0.01" placeholder="0.00"></label>
-              <label>Selling price <input type="number" id="calcSell" min="0" step="0.01" placeholder="0.00"></label>
-              <label>Shipping cost <input type="number" id="calcShipping" min="0" step="0.01" placeholder="0.00"></label>
-              <label>Other expenses <input type="number" id="calcOther" min="0" step="0.01" placeholder="0.00"></label>
-            </div>
-            <label>Quantity <input type="number" id="calcQuantity" min="1" step="1" value="1"></label>
-            <button class="button button-primary button-wide" id="runCalculator">Calculate results <span>→</span></button>
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-top"><span>Total revenue</span><span class="stat-icon">↗</span></div><strong id="totalRevenue">0</strong><small class="muted">Revenue from recorded sales</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Net profit</span><span class="stat-icon">◆</span></div><strong id="totalProfit">0</strong><small class="muted">After recorded product costs</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Products</span><span class="stat-icon">▦</span></div><strong id="totalProducts">0</strong><small class="muted">Products in your inventory</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Sales recorded</span><span class="stat-icon">⇧</span></div><strong id="totalSales">0</strong><small class="muted">Total transactions</small></article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel chart-panel">
+              <div class="panel-heading"><div><h3>Revenue overview</h3><p class="muted">Your latest recorded sales</p></div><span class="panel-tag">LAST 7 DAYS</span></div>
+              <div class="chart" id="revenueChart"><div class="empty-chart">Record sales to see your revenue chart.</div></div>
+            </article>
+            <article class="panel">
+              <div class="panel-heading"><div><h3>Quick actions</h3><p class="muted">Get things done faster</p></div></div>
+              <div class="quick-actions">
+                <button class="quick-action" data-go="products"><span>＋</span><div><b>Add a product</b><small>Build your inventory</small></div><i>→</i></button>
+                <button class="quick-action" data-go="sales"><span>↗</span><div><b>Record a sale</b><small>Track a new transaction</small></div><i>→</i></button>
+                <button class="quick-action" data-go="calculator"><span>⌗</span><div><b>Calculate profit</b><small>Check your margins</small></div><i>→</i></button>
+              </div>
+            </article>
+          </div>
+
+          <article class="panel">
+            <div class="panel-heading"><div><h3>Recent sales</h3><p class="muted">Your latest transactions</p></div><button class="text-btn" data-go="sales">View all →</button></div>
+            <div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>DATE</th><th>REVENUE</th><th>PROFIT</th></tr></thead><tbody id="recentSales"><tr><td colspan="4" class="empty-cell">No sales yet. Record your first sale.</td></tr></tbody></table></div>
           </article>
+        </section>
 
-          <article class="card results-card">
-            <div class="eyebrow">02 / YOUR RESULTS</div>
-            <h2>The breakdown</h2>
-            <div class="profit-highlight">
-              <small>Estimated total profit</small>
-              <strong id="calcResultProfit">0.00 MAD</strong>
-              <span id="calcResultMessage">Enter your numbers to get started.</span>
-            </div>
-            <div class="result-row"><span>Total revenue</span><strong id="calcResultRevenue">0.00 MAD</strong></div>
-            <div class="result-row"><span>Total costs</span><strong id="calcResultCost">0.00 MAD</strong></div>
-            <div class="result-row"><span>Profit margin</span><strong id="calcResultMargin">0%</strong></div>
-            <div class="result-row"><span>Return on investment</span><strong id="calcResultROI">0%</strong></div>
-            <div class="result-row"><span>Profit per item</span><strong id="calcResultUnit">0.00 MAD</strong></div>
+        <section class="page" id="page-calculator">
+          <div class="page-intro"><div class="eyebrow">KNOW YOUR NUMBERS</div><h2>Profit calculator</h2><p class="muted">Calculate costs, profit, margin, and return on investment before you sell.</p></div>
+          <div class="calculator-layout">
+            <article class="panel calculator-form">
+              <div class="panel-heading"><div><h3>Product details</h3><p class="muted">Enter your costs and selling price.</p></div></div>
+              <label>Product name<input id="calcName" type="text" placeholder="e.g. Wireless earbuds"></label>
+              <div class="form-grid">
+                <label>Buying price<input id="buyPrice" type="number" min="0" step="0.01" placeholder="0.00"></label>
+                <label>Selling price<input id="sellPrice" type="number" min="0" step="0.01" placeholder="0.00"></label>
+                <label>Shipping cost<input id="shippingCost" type="number" min="0" step="0.01" placeholder="0.00"></label>
+                <label>Other costs<input id="otherCost" type="number" min="0" step="0.01" placeholder="0.00"></label>
+              </div>
+              <button class="primary-btn full-btn" id="calculateBtn">Calculate profit <span>→</span></button>
+              <p class="form-message" id="calcMessage">Enter your numbers to calculate your profit.</p>
+            </article>
+            <article class="panel results-panel">
+              <div class="eyebrow">YOUR RESULTS</div><h3>Profit breakdown</h3>
+              <div class="main-result"><small>NET PROFIT PER ITEM</small><strong id="calcProfit">—</strong><span id="calcMessageResult">Waiting for calculation</span></div>
+              <div class="result-line"><span>Total cost</span><b id="calcCost">—</b></div>
+              <div class="result-line"><span>Revenue</span><b id="calcRevenue">—</b></div>
+              <div class="result-line"><span>Profit margin</span><b id="calcMargin">—</b></div>
+              <div class="result-line"><span>ROI</span><b id="calcROI">—</b></div>
+              <div class="result-note">Calculations are estimates based on the costs you enter. Remember to include every expense.</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="page" id="page-products">
+          <div class="page-intro intro-with-action"><div><div class="eyebrow">YOUR INVENTORY</div><h2>Products</h2><p class="muted">Keep track of what you buy, sell, and have in stock.</p></div><button class="primary-btn" id="addProductBtn">＋ Add product</button></div>
+          <article class="panel"><div class="panel-heading"><div><h3>Product inventory</h3><p class="muted"><span id="productCount">0</span> products listed</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>BUY PRICE</th><th>SELL PRICE</th><th>STOCK</th><th>ACTIONS</th></tr></thead><tbody id="productList"><tr><td colspan="5" class="empty-cell">No products yet. Add your first product.</td></tr></tbody></table></div>
           </article>
-        </div>
-      </section>
+        </section>
 
-      <!-- PRODUCTS -->
-      <section class="page" id="page-products">
-        <div class="page-intro page-intro-row">
-          <div><div class="eyebrow">INVENTORY CONTROL</div><h1>Your <span>products.</span></h1><p>Keep track of what you buy, stock and sell.</p></div>
-          <button class="button button-primary" id="newProduct">＋ Add product</button>
-        </div>
-        <div class="stats stats-three">
-          <article class="stat"><div class="stat-label">PRODUCT TYPES</div><div class="stat-value" id="productTypes">0</div><div class="stat-foot">Different items</div></article>
-          <article class="stat"><div class="stat-label">TOTAL STOCK</div><div class="stat-value" id="stockUnits">0</div><div class="stat-foot">Units available</div></article>
-          <article class="stat"><div class="stat-label">STOCK VALUE</div><div class="stat-value" id="stockValue">0.00 MAD</div><div class="stat-foot">Based on buying prices</div></article>
-        </div>
-        <article class="card">
-          <div class="card-heading"><div><div class="eyebrow">YOUR CATALOG</div><h2>Inventory</h2></div><span class="tag" id="productCount">0 PRODUCTS</span></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>PRODUCT</th><th>BUY PRICE</th><th>SELL PRICE</th><th>STOCK</th><th>ACTIONS</th></tr></thead>
-              <tbody id="productRows"><tr><td colspan="5" class="empty">Your products will appear here.</td></tr></tbody>
-            </table>
+        <section class="page" id="page-sales">
+          <div class="page-intro intro-with-action"><div><div class="eyebrow">TRANSACTION TRACKER</div><h2>Sales</h2><p class="muted">Record transactions and follow your business performance.</p></div><button class="primary-btn" id="addSaleBtn">＋ Record sale</button></div>
+          <div class="stats-grid compact-stats">
+            <article class="stat-card"><div class="stat-top"><span>Revenue</span><span class="stat-icon">↗</span></div><strong id="salesRevenue">0</strong></article>
+            <article class="stat-card"><div class="stat-top"><span>Profit</span><span class="stat-icon">◆</span></div><strong id="salesProfit">0</strong></article>
           </div>
-        </article>
-      </section>
+          <article class="panel"><div class="panel-heading"><div><h3>All transactions</h3><p class="muted">Your recorded sales history</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>DATE</th><th>QUANTITY</th><th>REVENUE</th><th>PROFIT</th><th>ACTIONS</th></tr></thead><tbody id="salesList"><tr><td colspan="6" class="empty-cell">No sales recorded yet.</td></tr></tbody></table></div>
+          </article>
+        </section>
 
-      <!-- SALES -->
-      <section class="page" id="page-sales">
-        <div class="page-intro page-intro-row">
-          <div><div class="eyebrow">TRANSACTION MANAGEMENT</div><h1>Sales <span>activity.</span></h1><p>Every sale recorded. Every number accounted for.</p></div>
-          <button class="button button-primary" id="newSale">＋ Record sale</button>
-        </div>
-        <div class="stats stats-three">
-          <article class="stat"><div class="stat-label">TOTAL REVENUE</div><div class="stat-value" id="salesRevenue">0.00 MAD</div><div class="stat-foot">All transactions</div></article>
-          <article class="stat"><div class="stat-label">TOTAL PROFIT</div><div class="stat-value green-text" id="salesProfit">0.00 MAD</div><div class="stat-foot">After buying costs</div></article>
-          <article class="stat"><div class="stat-label">UNITS SOLD</div><div class="stat-value" id="salesUnits">0</div><div class="stat-foot">Across all products</div></article>
-        </div>
-        <article class="card">
-          <div class="card-heading"><div><div class="eyebrow">SALES HISTORY</div><h2>All transactions</h2></div></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>PRODUCT</th><th>DATE</th><th>QTY</th><th>REVENUE</th><th>PROFIT</th><th>ACTION</th></tr></thead>
-              <tbody id="saleRows"><tr><td colspan="6" class="empty">Your recorded sales will appear here.</td></tr></tbody>
-            </table>
+        <section class="page" id="page-analytics">
+          <div class="page-intro"><div class="eyebrow">BUSINESS INTELLIGENCE</div><h2>Analytics</h2><p class="muted">Understand your sales, revenue, and profitability.</p></div>
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-top"><span>Total revenue</span><span class="stat-icon">↗</span></div><strong id="analyticsRevenue">0</strong></article>
+            <article class="stat-card"><div class="stat-top"><span>Total profit</span><span class="stat-icon">◆</span></div><strong id="analyticsProfit">0</strong></article>
+            <article class="stat-card"><div class="stat-top"><span>Average sale</span><span class="stat-icon">◈</span></div><strong id="averageSale">0</strong></article>
+            <article class="stat-card"><div class="stat-top"><span>Units sold</span><span class="stat-icon">▦</span></div><strong id="unitsSold">0</strong></article>
           </div>
-        </article>
-      </section>
+          <article class="panel chart-panel"><div class="panel-heading"><div><h3>Revenue by day</h3><p class="muted">Based on your recorded sales</p></div></div><div class="chart analytics-chart" id="analyticsChart"><div class="empty-chart">Your analytics will appear here when you record sales.</div></div></article>
+        </section>
 
-      <!-- ANALYTICS -->
-      <section class="page" id="page-analytics">
-        <div class="page-intro"><div class="eyebrow">BUSINESS INTELLIGENCE</div><h1>Know your <span>numbers.</span></h1><p>A clearer picture of your business performance.</p></div>
-        <div class="stats">
-          <article class="stat"><div class="stat-label">REVENUE</div><div class="stat-value" id="analyticsRevenue">0.00 MAD</div><div class="stat-foot">Total sales revenue</div></article>
-          <article class="stat"><div class="stat-label">NET PROFIT</div><div class="stat-value green-text" id="analyticsProfit">0.00 MAD</div><div class="stat-foot">Total recorded profit</div></article>
-          <article class="stat"><div class="stat-label">AVERAGE SALE</div><div class="stat-value" id="analyticsAverage">0.00 MAD</div><div class="stat-foot">Revenue per transaction</div></article>
-          <article class="stat"><div class="stat-label">UNITS SOLD</div><div class="stat-value" id="analyticsUnits">0</div><div class="stat-foot">Total items sold</div></article>
-        </div>
-        <div class="dashboard-grid">
-          <article class="card performance-card"><div class="card-heading"><div><div class="eyebrow">SALES TREND</div><h2>Revenue by day</h2></div></div><div id="analyticsChart" class="chart tall-chart"></div></article>
-          <article class="card"><div class="card-heading"><div><div class="eyebrow">PRODUCT PERFORMANCE</div><h2>Top products</h2></div></div><div id="topProducts" class="top-products"><p class="empty">Record sales to see product performance.</p></div></article>
-        </div>
-      </section>
-
-      <!-- SETTINGS -->
-      <section class="page" id="page-settings">
-        <div class="page-intro"><div class="eyebrow">YOUR WORKSPACE</div><h1>Workspace <span>settings.</span></h1><p>Control how your business information is displayed.</p></div>
-        <article class="card settings-card">
-          <div class="eyebrow">PREFERENCES</div><h2>Currency</h2>
-          <p>Choose the currency used throughout your workspace.</p>
-          <label class="settings-select">Display currency
-            <select id="currency">
-              <option value="MAD">MAD — Moroccan Dirham</option>
-              <option value="USD">USD — US Dollar</option>
-              <option value="EUR">EUR — Euro</option>
-              <option value="GBP">GBP — British Pound</option>
-              <option value="CAD">CAD — Canadian Dollar</option>
-              <option value="AUD">AUD — Australian Dollar</option>
-              <option value="CHF">CHF — Swiss Franc</option>
-              <option value="JPY">JPY — Japanese Yen</option>
-            </select>
-          </label>
-          <div class="settings-divider"></div>
-          <div class="eyebrow">DATA MANAGEMENT</div><h2>Your business data</h2>
-          <p>Your data is saved in this browser on this device. Clearing it cannot be undone.</p>
-          <button class="button button-danger" id="clearData">Delete all workspace data</button>
-        </article>
-        <div class="version-note">RESELLPRO X <span>3.0</span> · PERSONAL BUSINESS WORKSPACE</div>
-      </section>
-
-    </div>
-    <footer>RESELLPRO X <span>·</span> BUILT FOR BUSINESS.</footer>
-  </main>
-</div>
-
-<!-- MODAL -->
-<div class="modal-layer" id="modalLayer" aria-hidden="true">
-  <div class="modal-box">
-    <div class="modal-header"><div><div class="eyebrow">WORKSPACE FORM</div><h2 id="modalTitle">Add item</h2></div><button class="modal-close" id="modalClose" aria-label="Close">×</button></div>
-    <div id="modalContent"></div>
+        <section class="page" id="page-settings">
+          <div class="page-intro"><div class="eyebrow">WORKSPACE CONTROL</div><h2>Settings</h2><p class="muted">Manage your preferences and business data.</p></div>
+          <article class="panel settings-panel"><div><h3>Currency</h3><p class="muted">Choose the currency used throughout your dashboard.</p></div><select id="currencySelect"><option value="MAD">MAD — Moroccan dirham</option><option value="USD">USD — US dollar</option><option value="EUR">EUR — Euro</option><option value="GBP">GBP — British pound</option><option value="CAD">CAD — Canadian dollar</option><option value="AED">AED — UAE dirham</option></select></article>
+          <article class="panel danger-panel"><div><h3>Clear workspace data</h3><p class="muted">Permanently remove all products and sales saved in this browser.</p></div><button class="danger-btn" id="clearDataBtn">Clear all data</button></article>
+          <div class="settings-foot">RESELLPRO X <span>•</span> Your business, under control.</div>
+        </section>
+      </div>
+    </main>
   </div>
-</div>
 
-<div class="toast" id="toast" role="status"></div>
-<script src="app.js"></script>
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <div class="modal-header"><div><div class="eyebrow">WORKSPACE</div><h3 id="modalTitle">Add item</h3></div><button class="modal-close" id="closeModal" aria-label="Close">×</button></div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
 </body>
 </html>
+
 
